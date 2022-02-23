@@ -1,4 +1,4 @@
-package fr.baptiste_masoud;
+package fr.baptiste_masoud.server;
 
 import java.io.IOException;
 

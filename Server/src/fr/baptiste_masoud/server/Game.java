@@ -1,4 +1,4 @@
-package fr.baptiste_masoud;
+package fr.baptiste_masoud.server;
 
 public class Game {
     private final PlayerClient playerClient1;
