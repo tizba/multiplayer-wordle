@@ -1,7 +1,5 @@
 package fr.baptiste_masoud;
 
-// A Java program for a Client
-
 import java.net.*;
 import java.io.*;
 
