@@ -1,4 +1,4 @@
-package fr.baptiste_masoud.server;
+package fr.baptiste_masoud.multiplayer_wordle.server;
 
 public class Game {
     private final PlayerClient playerClient1;

@@ -1,4 +1,6 @@
-package fr.baptiste_masoud.server;
+package fr.baptiste_masoud.multiplayer_wordle.server;
+
+import fr.baptiste_masoud.multiplayer_wordle.messages.*;
 
 import java.io.*;
 import java.net.Socket;

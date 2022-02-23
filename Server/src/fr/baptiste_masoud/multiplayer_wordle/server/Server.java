@@ -1,11 +1,12 @@
-package fr.baptiste_masoud.server;
+package fr.baptiste_masoud.multiplayer_wordle.server;
+
+import fr.baptiste_masoud.multiplayer_wordle.messages.TooManyPlayersMessage;
 
 import java.io.*;
 import java.net.*;
 
 // Server class
 public class Server {
-
     private PlayerClient playerClient1 = null;
     private PlayerClient playerClient2 = null;
     private Game game;
@@ -34,8 +35,9 @@ public class Server {
             playerClient2 = new PlayerClient(clientSocket);
             playerClient2.start();
         } else {
-            System.out.println("2 Players are already connected, closing new connection: " + clientSocket.toString());
-            clientSocket.close();
+            System.out.println("2 Players are already connected, sending TooManyPlayersMessage to:" + clientSocket.toString());
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+            objectOutputStream.writeObject(new TooManyPlayersMessage());
             return;
         }
 
