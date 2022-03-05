@@ -2,7 +2,9 @@ package fr.baptiste_masoud.multiplayer_wordle.client.controller;
 
 import fr.baptiste_masoud.multiplayer_wordle.client.gui.GUI;
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.DisconnectMessage;
+import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SetNameMessage;
 
+import javax.swing.*;
 import java.io.IOException;
 
 public class GUIController {
@@ -18,7 +20,10 @@ public class GUIController {
         try {
             controller.setServerConnection(new ServerConnection(address, port, controller));
         } catch (IOException e) {
-            e.printStackTrace();
+            JPanel panel = new JPanel();
+            panel.add(new JLabel("Connection to server failed, verify address and port…"));
+            JOptionPane.showConfirmDialog(null, panel, "Connection to server failed…",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -28,5 +33,10 @@ public class GUIController {
 
     public void setGui(GUI gui) {
         this.gui = gui;
+    }
+
+    public void sendName(String name) {
+        if (controller.getServerConnection() == null) return;
+        controller.getServerConnection().getMessageSender().sendMessage(new SetNameMessage(name));
     }
 }

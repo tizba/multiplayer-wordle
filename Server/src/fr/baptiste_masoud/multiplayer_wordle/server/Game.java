@@ -1,6 +1,6 @@
 package fr.baptiste_masoud.multiplayer_wordle.server;
 
-import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulConnectionMessage;
+import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.OpponentNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulDisconnectionMessage;
 
 public class Game {
@@ -45,5 +45,18 @@ public class Game {
             playerClient2.getMessageSender().sendMessage(new SuccessfulDisconnectionMessage());
             playerClient2.setConnected(false);
         }
+    }
+
+    /**
+     * This method sends the name of playerClient to his opponent.
+     * @param playerClient the PlayerClient who's name needs to be sent to opponent
+     */
+    public void sendNameToOpponent(PlayerClient playerClient) {
+        if (playerClient == playerClient1 && playerClient2 != null) {
+            playerClient2.getMessageSender().sendMessage(new OpponentNameMessage(playerClient.getPlayerName()));
+        } else if (playerClient == playerClient2 && playerClient1 != null) {
+            playerClient1.getMessageSender().sendMessage(new OpponentNameMessage(playerClient.getPlayerName()));
+        }
+
     }
 }

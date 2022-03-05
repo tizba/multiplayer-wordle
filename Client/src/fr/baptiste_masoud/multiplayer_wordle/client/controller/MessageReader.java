@@ -1,9 +1,9 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.controller;
 
-import fr.baptiste_masoud.multiplayer_wordle.messages.Message;
-import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.ClientToServerMessage;
+import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.OpponentNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.ServerToClientMessage;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -47,6 +47,10 @@ public class MessageReader extends Thread {
             case SUCCESSFUL_DISCONNECTION -> {
                 this.handleSuccessfulDisconnection();
             }
+
+            case OPPONENT_NAME -> {
+                this.handleNames((OpponentNameMessage)message);
+            }
         }
     }
 
@@ -54,6 +58,12 @@ public class MessageReader extends Thread {
         controller.setServerConnection(null);
         controller.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(false);
         controller.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(true);
+
+        // show message
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("2 players are already playing… try again later"));
+        JOptionPane.showConfirmDialog(null, panel, "",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
     }
 
     private void handleSuccessfulDisconnection() {
@@ -65,5 +75,9 @@ public class MessageReader extends Thread {
     private void handleSuccessfulConnection() {
         controller.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(false);
         controller.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(true);
+    }
+
+    private void handleNames(OpponentNameMessage opponentNameMessage) {
+        controller.getGui().getWordlePanel().getOpponentPanel().getNameTextField().setText(opponentNameMessage.getName());
     }
 }

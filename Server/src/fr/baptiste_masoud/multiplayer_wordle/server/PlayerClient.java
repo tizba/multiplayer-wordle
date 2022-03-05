@@ -1,6 +1,7 @@
 package fr.baptiste_masoud.multiplayer_wordle.server;
 
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.ClientToServerMessage;
+import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SetNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulConnectionMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulDisconnectionMessage;
 
@@ -15,6 +16,11 @@ class PlayerClient extends Thread {
     private final ObjectInputStream objectInputStream;
     private boolean connected = true;
     private Game game;
+    private String playerName = "Change your name";
+
+    public String getPlayerName() {
+        return playerName;
+    }
 
     public PlayerClient(Socket socket) throws IOException {
         this.socket = socket;
@@ -63,7 +69,12 @@ class PlayerClient extends Thread {
             case DISCONNECT -> {
                 game.getServer().newGame();
             }
+
+            case SET_NAME -> {
+                SetNameMessage setNameMessage = (SetNameMessage)message;
+                this.playerName = setNameMessage.getName();
+                this.game.sendNameToOpponent(this);
+            }
         }
     }
-
 }

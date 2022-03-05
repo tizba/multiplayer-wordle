@@ -16,8 +16,6 @@ public class MessageSender {
         try {
             this.objectOutputStream.writeObject(message);
             System.out.println("Message sent: " + message.getMessageType());
-        } catch (Exception e) {
-
-        }
+        } catch (Exception ignored) {}
     }
 }
