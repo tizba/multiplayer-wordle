@@ -1,6 +1,7 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel;
 
 import fr.baptiste_masoud.multiplayer_wordle.client.controller.GUIController;
+import fr.baptiste_masoud.multiplayer_wordle.messages.GameState;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,7 +13,7 @@ public class WordlePanel extends JPanel {
     private final PlayerPanel playerPanel;
     private final PlayerPanel opponentPanel;
 
-    public WordlePanel(GUIController guiController) {
+    public WordlePanel(GUIController guiController, GameState gameState) {
         this.guiController = guiController;
 
         this.setLayout(new GridLayout(1, 2, 50, 0));

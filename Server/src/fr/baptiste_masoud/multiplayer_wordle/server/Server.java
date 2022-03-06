@@ -1,6 +1,7 @@
 package fr.baptiste_masoud.multiplayer_wordle.server;
 
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.TooManyPlayersMessage;
+import fr.baptiste_masoud.multiplayer_wordle.server.game.Game;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;

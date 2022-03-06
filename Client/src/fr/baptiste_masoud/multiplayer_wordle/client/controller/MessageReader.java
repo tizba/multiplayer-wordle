@@ -1,5 +1,6 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.controller;
 
+import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.GameStateMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.OpponentNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.ServerToClientMessage;
 
@@ -26,13 +27,18 @@ public class MessageReader extends Thread {
                 ServerToClientMessage message = (ServerToClientMessage) objectInputStream.readObject();
                 handleMessage(message);
             } catch (IOException e) {
-                controller.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(true);
-                controller.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(false);
-                controller.setServerConnection(null);
+                onServerShutdown();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void onServerShutdown() {
+        controller.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(true);
+        controller.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(false);
+        controller.getGui().getContentPane().setVisible(false);
+        controller.setServerConnection(null);
     }
 
     private void handleMessage(ServerToClientMessage message) {
@@ -47,9 +53,11 @@ public class MessageReader extends Thread {
             case SUCCESSFUL_DISCONNECTION -> {
                 this.handleSuccessfulDisconnection();
             }
-
             case OPPONENT_NAME -> {
-                this.handleNames((OpponentNameMessage)message);
+                this.handleNames((OpponentNameMessage) message);
+            }
+            case GAME_STATE -> {
+                this.handleGameState((GameStateMessage) message);
             }
         }
     }
@@ -79,5 +87,9 @@ public class MessageReader extends Thread {
 
     private void handleNames(OpponentNameMessage opponentNameMessage) {
         controller.getGui().getWordlePanel().getOpponentPanel().getNameTextField().setText(opponentNameMessage.getName());
+    }
+
+    private void handleGameState(GameStateMessage gameStateMessage) {
+        controller.getGui().updateWithGameState(gameStateMessage.getGameState());
     }
 }

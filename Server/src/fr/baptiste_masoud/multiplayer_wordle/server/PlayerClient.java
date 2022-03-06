@@ -3,13 +3,13 @@ package fr.baptiste_masoud.multiplayer_wordle.server;
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.ClientToServerMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SetNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulConnectionMessage;
-import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulDisconnectionMessage;
+import fr.baptiste_masoud.multiplayer_wordle.server.game.Game;
 
 import java.io.*;
 import java.net.Socket;
 
 
-class PlayerClient extends Thread {
+public class PlayerClient extends Thread {
 
     private final Socket socket;
     private final MessageSender messageSender;

@@ -19,15 +19,6 @@ public class Controller {
         return gui;
     }
 
-    public void connectToServer(String address, int port) {
-        try {
-            this.serverConnection = new ServerConnection(address, port, this);
-            gui.getMyMenuBar().getMenuConnectTo().setEnabled(false);
-        } catch (IOException e) {
-            this.serverConnection = null;
-        }
-    }
-
     public ServerConnection getServerConnection() {
         return serverConnection;
     }
