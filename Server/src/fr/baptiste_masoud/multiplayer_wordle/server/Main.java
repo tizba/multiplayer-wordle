@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        Submission submission = new Submission("ABBEY", "abiey");
+        Submission submission = new Submission("ABBEY", "abbey");
 
 
         Server server = new Server();

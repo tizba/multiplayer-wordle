@@ -1,5 +1,7 @@
 package fr.baptiste_masoud.multiplayer_wordle.server.game;
 
+import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.LetterValidity;
+
 public class Submission {
     private final String wordToDiscover;
     private final String submittedWord;

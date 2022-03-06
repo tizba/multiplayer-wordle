@@ -1,17 +1,17 @@
 package fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c;
 
-import fr.baptiste_masoud.multiplayer_wordle.messages.GameState;
+import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.GameStateData;
 import fr.baptiste_masoud.multiplayer_wordle.messages.MessageType;
 
 public class GameStateMessage extends ServerToClientMessage {
-    private final GameState gameState;
+    private final GameStateData gameState;
 
-    public GameStateMessage(GameState gameState) {
+    public GameStateMessage(GameStateData gameState) {
         super(MessageType.GAME_STATE);
         this.gameState = gameState;
     }
 
-    public GameState getGameState() {
+    public GameStateData getGameState() {
         return gameState;
     }
 }
