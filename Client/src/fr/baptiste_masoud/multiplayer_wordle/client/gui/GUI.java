@@ -2,8 +2,7 @@ package fr.baptiste_masoud.multiplayer_wordle.client.gui;
 
 import fr.baptiste_masoud.multiplayer_wordle.client.controller.GUIController;
 import fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel.WordlePanel;
-import fr.baptiste_masoud.multiplayer_wordle.messages.GameState;
-import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.GameStateMessage;
+import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.GameStateData;
 
 import javax.swing.*;
 
@@ -11,7 +10,7 @@ public class GUI extends JFrame {
     private final MyMenuBar menuBar;
     private WordlePanel wordlePanel;
     private final GUIController guiController;
-    private GameState previousGameState;
+    private GameStateData previousGameStateData;
 
     public GUI(GUIController guiController) {
         super("Multiplayer Wordle");
@@ -34,16 +33,23 @@ public class GUI extends JFrame {
         return menuBar;
     }
 
-    public void updateWithGameState(GameState gameState) {
-        if (gameState.isRunning()) {
-            this.wordlePanel = new WordlePanel(guiController, gameState);
+    public void updateWithGameStateData(GameStateData gameStateData) {
+        // when the game is launched
+        if (gameStateData.running() && (previousGameStateData == null || !previousGameStateData.running())) {
+            this.wordlePanel = new WordlePanel(guiController);
             setContentPane(wordlePanel);
         }
-        if (!gameState.isRunning()) {
+
+        // when the game stops
+        if (previousGameStateData != null && !gameStateData.running() && previousGameStateData.running()) {
             this.getContentPane().setVisible(false);
         }
 
-        this.previousGameState = gameState;
+        // update wordlePanel if game is running
+        if (gameStateData.running())
+            this.wordlePanel.updateWithGameState(gameStateData);
+
+        this.previousGameStateData = gameStateData;
         this.revalidate();
     }
 }

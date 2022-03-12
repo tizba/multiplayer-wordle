@@ -1,9 +1,6 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.controller;
 
 import fr.baptiste_masoud.multiplayer_wordle.client.gui.GUI;
-import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.DisconnectMessage;
-
-import java.io.IOException;
 
 public class Controller {
     private GUI gui;

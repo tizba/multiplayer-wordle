@@ -3,6 +3,7 @@ package fr.baptiste_masoud.multiplayer_wordle.client.controller;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.GameStateMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.OpponentNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.ServerToClientMessage;
+import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SubmissionErrorMessage;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -56,10 +57,17 @@ public class MessageReader extends Thread {
             case OPPONENT_NAME -> {
                 this.handleNames((OpponentNameMessage) message);
             }
-            case GAME_STATE -> {
+            case GAME_STATE_DATA -> {
                 this.handleGameState((GameStateMessage) message);
             }
+            case SUBMISSION_ERROR -> {
+                this.handleSubmissionError((SubmissionErrorMessage) message);
+            }
         }
+    }
+
+    private void handleSubmissionError(SubmissionErrorMessage message) {
+        controller.getGui().getWordlePanel().getPlayerPanel().setSubmissionErrorLabelText(message.getError());
     }
 
     private void handleTooManyPlayers() {
@@ -90,6 +98,6 @@ public class MessageReader extends Thread {
     }
 
     private void handleGameState(GameStateMessage gameStateMessage) {
-        controller.getGui().updateWithGameState(gameStateMessage.getGameState());
+        controller.getGui().updateWithGameStateData(gameStateMessage.getGameStateData());
     }
 }

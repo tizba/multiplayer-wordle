@@ -1,39 +1,47 @@
 package fr.baptiste_masoud.multiplayer_wordle.server.game;
 
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.LetterValidity;
+import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.SubmissionData;
 
 public class Submission {
     private final String wordToDiscover;
     private final String submittedWord;
-    private final LetterValidity[] submissionValidity;
+    private final LetterValidity[] validity;
     private final boolean correct;
 
     public Submission(String wordToDiscover, String submittedWord) {
         assert (wordToDiscover.length() == submittedWord.length());
         this.wordToDiscover = wordToDiscover.toUpperCase();
         this.submittedWord = submittedWord.toUpperCase();
-        this.submissionValidity = initSubmissionValidity();
-        this.correct = checkIfCorrect(submissionValidity);
+        this.validity = initValidity(this.wordToDiscover, this.submittedWord);
+        this.correct = checkIfCorrect(validity);
     }
 
-    private LetterValidity[] initSubmissionValidity() {
-        LetterValidity[] submissionValidity = new LetterValidity[submittedWord.length()];
+    public SubmissionData getSubmissionData() {
+        return new SubmissionData(submittedWord, validity, correct);
+    }
 
+    public SubmissionData getOpponentSubmissionData() {
+        return new SubmissionData(null, validity, correct);
+    }
+
+    private LetterValidity[] initValidity(String wordToDiscover, String submittedWord) {
+        LetterValidity[] validity = new LetterValidity[submittedWord.length()];
 
         // find all in place characters
-        for (int i = 0; i < submissionValidity.length; i++) {
+        for (int i = 0; i < validity.length; i++) {
             char currentLetter = submittedWord.toCharArray()[i];
             if (currentLetter == wordToDiscover.toCharArray()[i]) {
-                submissionValidity[i] = LetterValidity.IN_PLACE;
+                validity[i] = LetterValidity.IN_PLACE;
             } else {
-                submissionValidity[i] = null;
+                validity[i] = null;
             }
 
         }
 
         String notInPlaceWordToDiscover = wordToDiscover, notInPlaceSubmittedWord = submittedWord;
-        for (int i = 0; i < submissionValidity.length; i++) {
-            if(submissionValidity[i] == LetterValidity.IN_PLACE) {
+        for (int i = 0; i < validity.length; i++) {
+            if(validity[i] == LetterValidity.IN_PLACE) {
                 char[] chars = notInPlaceSubmittedWord.toCharArray();
                 chars[i] = '%';
                 notInPlaceSubmittedWord = String.valueOf(chars);
@@ -44,20 +52,20 @@ public class Submission {
             }
         }
 
-        for (int i = 0; i < submissionValidity.length; i++) {
+        for (int i = 0; i < validity.length; i++) {
             if (notInPlaceSubmittedWord.toCharArray()[i] == '%')
                 continue;
 
             int indexOfCurrentChar = notInPlaceWordToDiscover.indexOf(notInPlaceSubmittedWord.toCharArray()[i]);
             if (indexOfCurrentChar == -1) {
-                submissionValidity[i] = LetterValidity.NOT_IN_WORD;
+                validity[i] = LetterValidity.NOT_IN_WORD;
 
                 char[] chars = notInPlaceSubmittedWord.toCharArray();
                 chars[i] = '%';
                 notInPlaceSubmittedWord = String.valueOf(chars);
 
             } else {
-                submissionValidity[i] = LetterValidity.IN_WORD;
+                validity[i] = LetterValidity.IN_WORD;
 
                 char[] chars = notInPlaceSubmittedWord.toCharArray();
                 chars[i] = '%';
@@ -70,7 +78,7 @@ public class Submission {
             }
         }
 
-        return submissionValidity;
+        return validity;
     }
 
     private boolean checkIfCorrect(LetterValidity[] submissionValidity) {
@@ -80,8 +88,8 @@ public class Submission {
         return true;
     }
 
-    public LetterValidity[] getSubmissionValidity() {
-        return submissionValidity;
+    public LetterValidity[] getValidity() {
+        return validity;
     }
 
     public String getSubmittedWord() {

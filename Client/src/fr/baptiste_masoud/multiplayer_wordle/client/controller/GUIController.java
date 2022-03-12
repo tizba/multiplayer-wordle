@@ -3,6 +3,7 @@ package fr.baptiste_masoud.multiplayer_wordle.client.controller;
 import fr.baptiste_masoud.multiplayer_wordle.client.gui.GUI;
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.DisconnectMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SetNameMessage;
+import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SubmissionMessage;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -10,7 +11,6 @@ import java.io.IOException;
 public class GUIController {
     private final Controller controller;
     private GUI gui;
-
 
     public GUIController(Controller controller) {
         this.controller = controller;
@@ -38,5 +38,12 @@ public class GUIController {
     public void sendName(String name) {
         if (controller.getServerConnection() == null) return;
         controller.getServerConnection().getMessageSender().sendMessage(new SetNameMessage(name));
+    }
+
+    public void sendSubmission(String submittedWord) {
+        controller.getGui().getWordlePanel().getPlayerPanel().getSubmissionErrorLabel().setVisible(false);
+        if (controller.getServerConnection() == null) return;
+        controller.getServerConnection().getMessageSender().sendMessage(new SubmissionMessage(submittedWord));
+
     }
 }

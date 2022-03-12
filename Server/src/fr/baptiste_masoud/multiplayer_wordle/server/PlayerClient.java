@@ -2,6 +2,7 @@ package fr.baptiste_masoud.multiplayer_wordle.server;
 
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.ClientToServerMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SetNameMessage;
+import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SubmissionMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulConnectionMessage;
 import fr.baptiste_masoud.multiplayer_wordle.server.game.Game;
 
@@ -55,6 +56,7 @@ public class PlayerClient extends Thread {
             try {
                 ClientToServerMessage message = (ClientToServerMessage) objectInputStream.readObject();
                 handleMessage(message);
+                game.sendGameStateMessage();
             } catch (IOException e) {
                 this.connected = false;
                 game.getServer().newGame();
@@ -71,9 +73,14 @@ public class PlayerClient extends Thread {
             }
 
             case SET_NAME -> {
-                SetNameMessage setNameMessage = (SetNameMessage)message;
+                SetNameMessage setNameMessage = (SetNameMessage) message;
                 this.playerName = setNameMessage.getName();
                 this.game.sendNameToOpponent(this);
+            }
+
+            case SUBMISSION -> {
+                SubmissionMessage submissionMessage = (SubmissionMessage) message;
+                game.addSubmission(this, submissionMessage.getSubmittedWord());
             }
         }
     }

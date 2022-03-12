@@ -4,14 +4,14 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.GameStateData;
 import fr.baptiste_masoud.multiplayer_wordle.messages.MessageType;
 
 public class GameStateMessage extends ServerToClientMessage {
-    private final GameStateData gameState;
+    private final GameStateData gameStateData;
 
-    public GameStateMessage(GameStateData gameState) {
-        super(MessageType.GAME_STATE);
-        this.gameState = gameState;
+    public GameStateMessage(GameStateData gameStateData) {
+        super(MessageType.GAME_STATE_DATA);
+        this.gameStateData = gameStateData;
     }
 
-    public GameStateData getGameState() {
-        return gameState;
+    public GameStateData getGameStateData() {
+        return gameStateData;
     }
 }

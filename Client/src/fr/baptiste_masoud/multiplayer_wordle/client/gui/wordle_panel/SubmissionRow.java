@@ -1,44 +1,70 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel;
 
+import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.LetterValidity;
+import org.jetbrains.annotations.Nullable;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Iterator;
 
 public class SubmissionRow extends JPanel {
-    private final String submission;
-
     private final JLabel[] submissionLabels;
 
     /**
-     *
-     * @param submission the submitted text to be displayed, if a char in the String is equal to '%', it displays an empty cell
+     * @param submittedWord the submitted text to be displayed, if null, it does not display any letters
+     * @param submissionValidity
      */
-    public SubmissionRow(String submission) {
-        this.submission = submission.toUpperCase();
-        this.submissionLabels = new JLabel[submission.length()];
-
-        this.setLayout(new GridLayout(1, submission.length(), 5, 0));
+    public SubmissionRow(@Nullable String submittedWord, @Nullable LetterValidity[] submissionValidity) {
+        this.setLayout(new GridLayout(1, 6, 5, 0));
         setBackground(Color.lightGray);
-        setAndAddSubmissionLabels();
+
+        this.submissionLabels = new JLabel[6];
+
+        setAndAddSubmissionLabels(submittedWord);
+        setLabelsColors(submissionValidity);
     }
-
-    public void setAndAddSubmissionLabels() {
-        int i = 0;
-        for (char character : submission.toCharArray()) {
-            submissionLabels[i] = new JLabel(String.valueOf(character), SwingConstants.CENTER);
-            submissionLabels[i].setOpaque(true);
-            submissionLabels[i].setBackground(Color.gray);
-            submissionLabels[i].setFont(new Font("Arial", Font.PLAIN, 28));
-
-            if (character == '%') {
+    
+    private void setAndAddSubmissionLabels(String submittedWord) {
+        // if submittedWord is null
+        if (submittedWord == null) {
+            for (int i = 0; i < submissionLabels.length; i++) {
+                submissionLabels[i] = new JLabel("%", SwingConstants.CENTER);
+                submissionLabels[i].setBackground(Color.gray.brighter().brighter());
                 submissionLabels[i].setForeground(submissionLabels[i].getBackground());
+                submissionLabels[i].setFont(new Font("Arial", Font.PLAIN, 28));
+                submissionLabels[i].setOpaque(true);
+                add(submissionLabels[i]);
             }
-
-            add(submissionLabels[i]);
-            i++;
-
+        } else {
+            int i = 0;
+            for (char character : submittedWord.toCharArray()) {
+                submissionLabels[i] = new JLabel(String.valueOf(character), SwingConstants.CENTER);
+                submissionLabels[i].setOpaque(true);
+                submissionLabels[i].setBackground(Color.red);
+                submissionLabels[i].setFont(new Font("Arial", Font.PLAIN, 28));
+                add(submissionLabels[i]);
+                i++;
+            }
         }
     }
 
+    private void setLabelsColors(LetterValidity[] submissionValidity) {
+        if (submissionValidity != null) {
+            for (int i = 0; i < submissionValidity.length; i++) {
+                Color backgroundColor = Color.gray.brighter();
+                switch (submissionValidity[i]) {
+                    case IN_WORD -> backgroundColor = Color.orange;
+                    case IN_PLACE -> backgroundColor = Color.green.darker();
+                }
+                submissionLabels[i].setBackground(backgroundColor);
+
+                if (submissionLabels[i].getText() == "%")
+                    submissionLabels[i].setForeground(submissionLabels[i].getBackground());
+            }
+        }
+    }
+    
 //    @Override
 //    public void paint(Graphics g) {
 //        super.paint(g);
