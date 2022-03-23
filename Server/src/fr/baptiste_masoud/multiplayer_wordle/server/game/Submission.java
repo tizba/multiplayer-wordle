@@ -4,16 +4,15 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.LetterValidity;
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.SubmissionData;
 
 public class Submission {
-    private final String wordToDiscover;
     private final String submittedWord;
     private final LetterValidity[] validity;
     private final boolean correct;
 
     public Submission(String wordToDiscover, String submittedWord) {
         assert (wordToDiscover.length() == submittedWord.length());
-        this.wordToDiscover = wordToDiscover.toUpperCase();
+        String wordToDiscover1 = wordToDiscover.toUpperCase();
         this.submittedWord = submittedWord.toUpperCase();
-        this.validity = initValidity(this.wordToDiscover, this.submittedWord);
+        this.validity = initValidity(wordToDiscover1, this.submittedWord);
         this.correct = checkIfCorrect(validity);
     }
 
@@ -86,18 +85,6 @@ public class Submission {
             if (letterValidity != LetterValidity.IN_PLACE) return false;
         }
         return true;
-    }
-
-    public LetterValidity[] getValidity() {
-        return validity;
-    }
-
-    public String getSubmittedWord() {
-        return submittedWord;
-    }
-
-    public String getWordToDiscover() {
-        return wordToDiscover;
     }
 
     public boolean isCorrect() {

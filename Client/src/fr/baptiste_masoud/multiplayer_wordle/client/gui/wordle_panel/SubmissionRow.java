@@ -5,8 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Objects;
 
 public class SubmissionRow extends JPanel {
     private final JLabel[] submissionLabels;
@@ -59,7 +58,7 @@ public class SubmissionRow extends JPanel {
                 }
                 submissionLabels[i].setBackground(backgroundColor);
 
-                if (submissionLabels[i].getText() == "%")
+                if (Objects.equals(submissionLabels[i].getText(), "%"))
                     submissionLabels[i].setForeground(submissionLabels[i].getBackground());
             }
         }

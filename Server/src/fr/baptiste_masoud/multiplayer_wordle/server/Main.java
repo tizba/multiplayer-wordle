@@ -1,17 +1,12 @@
 package fr.baptiste_masoud.multiplayer_wordle.server;
 
-import fr.baptiste_masoud.multiplayer_wordle.server.game.Submission;
-
 import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        Submission submission = new Submission("ABBEY", "abbey");
-
-
-        Server server = new Server();
+        Server server = new Server(5000);
         try {
-            server.launch(5000);
+            server.start();
         } catch (IOException e) {
             e.printStackTrace();
         }

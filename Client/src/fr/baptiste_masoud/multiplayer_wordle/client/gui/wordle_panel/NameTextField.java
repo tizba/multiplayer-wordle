@@ -1,6 +1,7 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel;
 
-import fr.baptiste_masoud.multiplayer_wordle.client.controller.GUIController;
+import fr.baptiste_masoud.multiplayer_wordle.client.connection_controller.ConnectionController;
+import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SetNameMessage;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,11 +10,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class NameTextField extends JTextField {
-    private final GUIController guiController;
+    private final ConnectionController connectionController;
 
-    public NameTextField(GUIController guiController) {
+    public NameTextField(ConnectionController connectionController) {
         super("Change your name");
-        this.guiController = guiController;
+        this.connectionController = connectionController;
         setHorizontalAlignment(JTextField.HORIZONTAL);
         setBorder(new EmptyBorder(0,0,0,0));
         setOpaque(false);
@@ -32,7 +33,7 @@ public class NameTextField extends JTextField {
 
             @Override
             public void keyReleased(KeyEvent e) {
-                guiController.sendName(getText());
+                connectionController.sendMessage(new SetNameMessage(getText()));
             }
 
         });

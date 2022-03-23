@@ -1,31 +1,26 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel;
 
-import fr.baptiste_masoud.multiplayer_wordle.client.controller.GUIController;
-import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.GameStateData;
+import fr.baptiste_masoud.multiplayer_wordle.client.connection_controller.ConnectionController;
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.RoundData;
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.SubmissionData;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class PlayerPanel extends JPanel {
     protected final SubmissionsPanel submissionsPanel;
     protected final NameTextField nameTextField;
     protected final JTextField submitTextField;
-    private final JLabel submissionErrorLabel;
+    protected final JLabel submissionErrorLabel;
 
-    public PlayerPanel(GUIController guiController) {
+    public PlayerPanel(ConnectionController connectionController) {
 
         this.setLayout(new GridBagLayout());
 
         GridBagConstraints constraints;
 
         // init nameTextField
-        this.nameTextField = new NameTextField(guiController);
+        this.nameTextField = new NameTextField(connectionController);
         // place nameTextField
         constraints = new GridBagConstraints();
         constraints.weighty = 0.1;
@@ -47,7 +42,7 @@ public class PlayerPanel extends JPanel {
         add(submissionsPanel, constraints);
 
         // init submitTextField
-        this.submitTextField = new SubmitTextField(guiController);
+        this.submitTextField = new SubmitTextField(connectionController);
         // place submitTextField
         constraints = new GridBagConstraints();
         constraints.gridy = 7;
@@ -66,7 +61,7 @@ public class PlayerPanel extends JPanel {
         // place submissionErrorLabel
         constraints = new GridBagConstraints();
         constraints.gridy = 8;
-        constraints.weighty = 0.05;
+        constraints.weighty = 0.1;
         constraints.weightx = 1;
         constraints.fill = GridBagConstraints.BOTH;
         add(submissionErrorLabel, constraints);
@@ -86,12 +81,11 @@ public class PlayerPanel extends JPanel {
         if (roundData.playerHasFinished()) {
             submitTextField.setVisible(false);
             submissionErrorLabel.setVisible(false);
+        } else {
+            submitTextField.setVisible(true);
+            submissionErrorLabel.setVisible(true);
         }
 
-    }
-
-    public JLabel getSubmissionErrorLabel() {
-        return submissionErrorLabel;
     }
 
     public void setSubmissionErrorLabelText(String error) {

@@ -4,64 +4,72 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.TooManyPlayersMessa
 import fr.baptiste_masoud.multiplayer_wordle.server.game.Game;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Objects;
+import java.util.Scanner;
 
-// Server class
 public class Server {
     private Game game;
     private boolean running;
+    private final int port;
 
-    public void setRunning(boolean running) {
-        this.running = running;
+    public Server(int port) {
+        this.port = port;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public void launch(int port) throws IOException {
+    /**
+     * Starts the server, it is now listening on his port and waiting for new client connections to handle them
+     * @throws IOException if the server is unable to listen on his port
+     * or if an I/O error occurs while waiting for clients
+     */
+    public void start() throws IOException {
         ServerSocket serverSocket = new ServerSocket(port);
         System.out.println("Listening on port " + serverSocket.getLocalPort());
-        System.out.println("Waiting for new client connections...");
         running = true;
+
+        Thread userInputThread = new Thread(() -> {
+            Scanner scanner = new Scanner(System.in);
+            while (running) {
+                String input = scanner.next();
+                if (Objects.equals(input.toUpperCase(), "STOP")) {
+                    running = false;
+                    System.exit(0);
+                }
+            }
+        });
+
+        userInputThread.start();
+
         while (running) {
             Socket clientSocket = serverSocket.accept();
             if (this.game == null) {
-                newGame();
+                initNewGame();
             }
             handleNewClient(clientSocket);
         }
     }
 
     /**
-     * Creates a new game
-     * If a game is already on, it disconnects all Players before creating a new one
+     * Initializes a new game
      */
-    public void newGame() {
-        if (this.game != null) {
-            game.disconnectPlayerClients();
-        }
+    public void initNewGame() {
         System.out.println("New game !");
         this.game = new Game(this);
     }
 
     /**
-     * Add the client to the game if 2 players are not already connected
-     * Send a TooManyPlayersMessage to the client if 2 players are already connected
-     * @param clientSocket to socket of a client
+     * Adds the client to the game if 2 players are not already connected<br/>
+     * Sends a TooManyPlayersMessage to the client if 2 players are already connected
+     * @param clientSocket the socket of the new client
      */
     private void handleNewClient(Socket clientSocket) {
         try {
-            if (game.getPlayerClient1() == null || game.getPlayerClient2() == null) {
-                PlayerClient playerClient = new PlayerClient(clientSocket);
-                game.addPlayerClient(playerClient);
-                playerClient.start();
+            Player player = new Player(game, clientSocket);
+            if (game.isFullOfPlayers()) {
+                player.getMessageSender().sendMessage(new TooManyPlayersMessage());
             } else {
-                MessageSender messageSender = new MessageSender(new ObjectOutputStream(clientSocket.getOutputStream()));
-                messageSender.sendMessage(new TooManyPlayersMessage());
-
+                game.addPlayer(player);
             }
         } catch (IOException e) {
             e.printStackTrace();

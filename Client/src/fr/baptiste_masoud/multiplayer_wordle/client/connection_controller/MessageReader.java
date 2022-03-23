@@ -1,4 +1,4 @@
-package fr.baptiste_masoud.multiplayer_wordle.client.controller;
+package fr.baptiste_masoud.multiplayer_wordle.client.connection_controller;
 
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.GameStateMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.OpponentNameMessage;
@@ -11,19 +11,17 @@ import java.io.ObjectInputStream;
 
 public class MessageReader extends Thread {
     private final ObjectInputStream objectInputStream;
-    private final ServerConnection serverConnection;
-    private Controller controller;
+    private final ConnectionController connectionController;
 
-    public MessageReader(ServerConnection serverConnection, ObjectInputStream objectInputStream, Controller controller) {
-        this.serverConnection = serverConnection;
+    public MessageReader(ConnectionController connectionController, ObjectInputStream objectInputStream) {
+        this.connectionController = connectionController;
         this.objectInputStream = objectInputStream;
-        this.controller = controller;
     }
 
 
     @Override
     public void run() {
-        while (this.isAlive()) {
+        while (connectionController.isConnected()) {
             try {
                 ServerToClientMessage message = (ServerToClientMessage) objectInputStream.readObject();
                 handleMessage(message);
@@ -36,10 +34,10 @@ public class MessageReader extends Thread {
     }
 
     private void onServerShutdown() {
-        controller.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(true);
-        controller.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(false);
-        controller.getGui().getContentPane().setVisible(false);
-        controller.setServerConnection(null);
+        connectionController.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(true);
+        connectionController.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(false);
+        connectionController.getGui().getContentPane().setVisible(false);
+        connectionController.disconnect();
     }
 
     private void handleMessage(ServerToClientMessage message) {
@@ -67,13 +65,13 @@ public class MessageReader extends Thread {
     }
 
     private void handleSubmissionError(SubmissionErrorMessage message) {
-        controller.getGui().getWordlePanel().getPlayerPanel().setSubmissionErrorLabelText(message.getError());
+        connectionController.getGui().getWordlePanel().getPlayerPanel().setSubmissionErrorLabelText(message.getError());
     }
 
     private void handleTooManyPlayers() {
-        controller.setServerConnection(null);
-        controller.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(false);
-        controller.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(true);
+        connectionController.disconnect();
+        connectionController.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(false);
+        connectionController.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(true);
 
         // show message
         JPanel panel = new JPanel();
@@ -83,21 +81,23 @@ public class MessageReader extends Thread {
     }
 
     private void handleSuccessfulDisconnection() {
-        controller.setServerConnection(null);
-        controller.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(true);
-        controller.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(false);
+        connectionController.disconnect();
+        connectionController.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(true);
+        connectionController.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(false);
+        connectionController.getGui().getWordlePanel().setVisible(false);
     }
 
     private void handleSuccessfulConnection() {
-        controller.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(false);
-        controller.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(true);
+        connectionController.getGui().getMyMenuBar().getMenuConnectTo().setEnabled(false);
+        connectionController.getGui().getMyMenuBar().getMenuDisconnect().setEnabled(true);
     }
 
     private void handleNames(OpponentNameMessage opponentNameMessage) {
-        controller.getGui().getWordlePanel().getOpponentPanel().getNameTextField().setText(opponentNameMessage.getName());
+        connectionController.getGui().getWordlePanel().getOpponentPanel().getNameTextField().setText(opponentNameMessage.getName());
     }
 
     private void handleGameState(GameStateMessage gameStateMessage) {
-        controller.getGui().updateWithGameStateData(gameStateMessage.getGameStateData());
+        connectionController.getGui().updateWithGameStateData(gameStateMessage.getGameStateData());
     }
 }
+

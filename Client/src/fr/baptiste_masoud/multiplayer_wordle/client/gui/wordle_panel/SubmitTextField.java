@@ -1,16 +1,15 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel;
 
-import fr.baptiste_masoud.multiplayer_wordle.client.controller.GUIController;
+import fr.baptiste_masoud.multiplayer_wordle.client.connection_controller.ConnectionController;
+import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SubmissionMessage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class SubmitTextField extends JTextField {
-    public SubmitTextField(GUIController guiController) {
+    public SubmitTextField(ConnectionController connectionController) {
         this.setFont(new Font("Arial", Font.PLAIN, 28));
         this.setHorizontalAlignment(JTextField.HORIZONTAL);
 
@@ -23,9 +22,10 @@ public class SubmitTextField extends JTextField {
         });
 
         addActionListener(e -> {
-            guiController.sendSubmission(getText().toUpperCase());
+            PlayerPanel playerPanel = (PlayerPanel) getParent();
+            playerPanel.setSubmissionErrorLabelText("");
+            connectionController.sendMessage(new SubmissionMessage(getText()));
             setText("");
-
         });
     }
 }

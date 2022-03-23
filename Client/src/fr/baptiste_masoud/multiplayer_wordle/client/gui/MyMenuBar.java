@@ -1,21 +1,22 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.gui;
 
-import fr.baptiste_masoud.multiplayer_wordle.client.controller.GUIController;
+import fr.baptiste_masoud.multiplayer_wordle.client.connection_controller.ConnectionController;
+import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.DisconnectMessage;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 public class MyMenuBar extends JMenuBar {
-    private final GUIController guiController;
+    private final ConnectionController connectionController;
 
     private final JMenuItem menuConnectTo;
     private final JMenuItem menuDisconnect;
 
-    public MyMenuBar(GUIController guiController) {
-        this.guiController = guiController;
+    public MyMenuBar(ConnectionController connectionController) {
+        this.connectionController = connectionController;
 
         // Connection JMenu
         JMenu menuConnection = new JMenu("Connection");
@@ -52,11 +53,22 @@ public class MyMenuBar extends JMenuBar {
         int result = JOptionPane.showConfirmDialog(null, panel, "Connect to server",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
-            guiController.connectToServer(addressTextField.getText(), Integer.parseInt(portTextField.getText()));
+            try {
+                connectionController.connect(addressTextField.getText(), Integer.parseInt(portTextField.getText()));
+                this.menuConnectTo.setEnabled(false);
+                this.menuDisconnect.setEnabled(true);
+            } catch (IOException e) {
+                panel = new JPanel();
+                panel.add(new JLabel("Connection to server failed, verify address and port…"));
+                JOptionPane.showConfirmDialog(null, panel, "Connection to server failed…",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
+                this.menuDisconnect.setEnabled(false);
+                this.menuConnectTo.setEnabled(true);
+            }
         }
     }
 
     private void menuDisconnect(ActionEvent event) {
-        guiController.disconnect();
+        connectionController.sendMessage(new DisconnectMessage());
     }
 }

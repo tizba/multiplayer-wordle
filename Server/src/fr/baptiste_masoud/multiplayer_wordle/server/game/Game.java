@@ -6,73 +6,68 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.GameStateMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.OpponentNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SubmissionErrorMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulDisconnectionMessage;
-import fr.baptiste_masoud.multiplayer_wordle.server.PlayerClient;
+import fr.baptiste_masoud.multiplayer_wordle.server.Player;
 import fr.baptiste_masoud.multiplayer_wordle.server.Server;
-import org.jetbrains.annotations.Nullable;
 
 
 public class Game {
-    private PlayerClient playerClient1;
-    private PlayerClient playerClient2;
+    private final Player[] players = new Player[2];
     private final Server server;
     private boolean running = false;
 
-    @Nullable
     private Round round;
-
-    // when both players are connected, this method initialize the game and launch it
-    public void init() {
-        round = new Round(playerClient1, playerClient2, "Should");
-        setRunning(true);
-    }
 
     public Game(Server server) {
         this.server = server;
     }
 
-    public PlayerClient getPlayerClient1() {
-        return playerClient1;
+    public void start() {
+        this.round = new Round(players, "Should");
+        this.running = true;
     }
 
-    public PlayerClient getPlayerClient2() {
-        return playerClient2;
+    public void end() {
+        this.running = false;
+        this.disconnectPlayers();
+        server.initNewGame();
     }
 
-    public Server getServer() {
-        return server;
+    public boolean isFullOfPlayers() {
+        return players[0] != null && players[1] != null;
     }
 
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
+    public void addPlayer(Player player) {
+        if (players[0] == null) {
+            players[0] = player;
+        } else if (players[1] == null) {
+            players[1] = player;
+        } else throw new RuntimeException("Can’t add a player to a game that is full !");
 
-    public void addPlayerClient(PlayerClient playerClient) {
-        playerClient.setGame(this);
-        if (playerClient1 == null) {
-            playerClient1 = playerClient;
-        } else if (playerClient2 == null) {
-            playerClient2 = playerClient;
-        } else return;
+        player.acceptConnection();
 
-        // if both players are connected, init the game
-        if (playerClient2 != null)
-            this.init();
+        if (isFullOfPlayers()) {
+            this.start();
+        }
 
         sendGameStateMessage();
+
     }
 
+    /**
+     * Sends a GameStateMessage to all players in the game
+     */
     public void sendGameStateMessage() {
-        if (playerClient1 != null)
-            playerClient1.getMessageSender().sendMessage(getGameStateMessage(playerClient1));
-        if (playerClient2 != null)
-            playerClient2.getMessageSender().sendMessage(getGameStateMessage(playerClient2));
+        if (players[0] != null)
+            players[0].getMessageSender().sendMessage(this.getGameStateMessage(players[0]));
+        if (players[1] != null)
+            players[1].getMessageSender().sendMessage(this.getGameStateMessage(players[1]));
     }
 
     /**
      * @param player the player that needs the GameStateData
-     * @return the GameStateMessage that needs to be sent to the PlayerClient parameter
+     * @return the GameStateMessage to be sent to the player
      */
-    public GameStateMessage getGameStateMessage(PlayerClient player) {
+    public GameStateMessage getGameStateMessage(Player player) {
         return new GameStateMessage(getGameStateData(player));
     }
 
@@ -80,51 +75,66 @@ public class Game {
      * @param player the player that needs the GameStateData
      * @return the GameStateData that needs to be sent to the PlayerClient parameter via a GameStateMessage
      */
-    private GameStateData getGameStateData(PlayerClient player) {
+    private GameStateData getGameStateData(Player player) {
         RoundData roundData = (round != null) ? round.getRoundData(player) : null;
-
         return new GameStateData(this.running, roundData);
     }
 
-    public void disconnectPlayerClients() {
-        this.running = false;
-        if (playerClient1 != null) {
-            playerClient1.getMessageSender().sendMessage(new SuccessfulDisconnectionMessage());
-            playerClient1.setConnected(false);
-        }
-        if (playerClient2 != null) {
-            playerClient2.getMessageSender().sendMessage(new SuccessfulDisconnectionMessage());
-            playerClient2.setConnected(false);
-        }
-
-        sendGameStateMessage();
-    }
-
     /**
-     * Sends the name of playerClient to his opponent.
-     * @param playerClient the PlayerClient whose name needs to be sent to opponent
+     * Sends a SuccessfulDisconnectionMessage to all players
      */
-    public void sendNameToOpponent(PlayerClient playerClient) {
-        if (playerClient == playerClient1 && playerClient2 != null) {
-            playerClient2.getMessageSender().sendMessage(new OpponentNameMessage(playerClient.getPlayerName()));
-        } else if (playerClient == playerClient2 && playerClient1 != null) {
-            playerClient1.getMessageSender().sendMessage(new OpponentNameMessage(playerClient.getPlayerName()));
+    public void disconnectPlayers() {
+        this.running = false;
+        if (players[0] != null) {
+            players[0].getMessageSender().sendMessage(new SuccessfulDisconnectionMessage());
+            players[0].setConnected(false);
+            players[0] = null;
         }
-
+        if (players[1] != null) {
+            players[1].getMessageSender().sendMessage(new SuccessfulDisconnectionMessage());
+            players[1].setConnected(false);
+            players[1] = null;
+        }
     }
 
     /**
-     * This method checks if the submission is valid / authorized, if yes, it adds it to the Game,
-     * if not, it sends back to the player a SubmissionError
-     * @param player the player that submitted
+     * Sends the name of player to his opponent if it has one
+     * @param player the Player whose name needs to be sent to his opponent
+     */
+    public void sendNameToOpponent(Player player) {
+        if (player == players[0] && players[1] != null) {
+            players[1].getMessageSender().sendMessage(new OpponentNameMessage(player.getName()));
+        } else if (player == players[1] && players[0] != null) {
+            players[0].getMessageSender().sendMessage(new OpponentNameMessage(player.getName()));
+        }
+    }
+
+    /**
+     * This method checks if the submission is authorized, if yes, it adds it to the Game,
+     * if not, it sends back to the player a SubmissionError containing the error that made the submission unauthorized
+     * @param player the player that has submitted
      * @param submittedWord the word that the player submitted
      */
-    public void addSubmission(PlayerClient player, String submittedWord) {
-        if (round != null && !round.areSubmissionsFull(player) && submittedWord.length() == round.getWordToDiscover().length()) {
+    public void addSubmission(Player player, String submittedWord) {
+        // if a round has started
+        // and the player has not finished yet
+        // and the submitted word has the same length as the word to discover
+        if (round != null
+                && !round.didPlayerFinished(player)
+                && submittedWord.length() == round.getWordToDiscover().length()) {
             this.round.addSubmission(player, submittedWord);
         }
+        // if not, detect the error and sends it
         else {
-            player.getMessageSender().sendMessage(new SubmissionErrorMessage("Error TBD"));
+            String error = "Error";
+            if (round == null)
+                error = "The round has not started yet";
+            else if (round.didPlayerFinished(player))
+                error = "You have finished this round";
+            else if (submittedWord.length() != round.getWordToDiscover().length())
+                error = "Impossible to submit \"" + submittedWord + "\" because it is not " + round.getWordToDiscover().length() + " letters long";
+
+            player.getMessageSender().sendMessage(new SubmissionErrorMessage(error));
         }
     }
 }
