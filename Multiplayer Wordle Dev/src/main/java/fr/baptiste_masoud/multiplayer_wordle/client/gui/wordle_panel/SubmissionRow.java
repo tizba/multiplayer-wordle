@@ -12,7 +12,7 @@ public class SubmissionRow extends JPanel {
 
     /**
      * @param submittedWord the submitted text to be displayed, if null, it does not display any letters
-     * @param submissionValidity
+     * @param submissionValidity the validity of each letter
      */
     public SubmissionRow(@Nullable String submittedWord, @Nullable LetterValidity[] submissionValidity) {
         this.setLayout(new GridLayout(1, 6, 5, 0));
@@ -63,33 +63,4 @@ public class SubmissionRow extends JPanel {
             }
         }
     }
-    
-//    @Override
-//    public void paint(Graphics g) {
-//        super.paint(g);
-//
-//        // to maximize letters font size
-//        // https://stackoverflow.com/questions/2715118/how-to-change-the-size-of-the-font-of-a-jlabel-to-take-the-maximum-size
-//        for (JLabel submissionLabel : submissionLabels) {
-//            Font labelFont = submissionLabel.getFont();
-//            String labelText = submissionLabel.getText();
-//
-//            int stringWidth = submissionLabel.getFontMetrics(labelFont).stringWidth(labelText);
-//            int componentWidth = submissionLabel.getWidth();
-//
-//            // find out how much the font can grow in width.
-//            double widthRatio = (double) componentWidth / (double) stringWidth;
-//            // reduce the font size a bit
-//            widthRatio /= 2;
-//
-//            int newFontSize = (int) (labelFont.getSize() * widthRatio);
-//            int componentHeight = submissionLabel.getHeight();
-//
-//            // pick a new font size, so it will not be larger than the height of label.
-//            int fontSizeToUse = Math.min(newFontSize, componentHeight);
-//
-//            // set the label's font size to the newly determined size.
-//            submissionLabel.setFont(new Font(labelFont.getName(), Font.PLAIN, fontSizeToUse));
-//        }
-//    }
 }

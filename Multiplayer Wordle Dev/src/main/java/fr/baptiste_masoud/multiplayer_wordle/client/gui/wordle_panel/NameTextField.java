@@ -10,11 +10,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class NameTextField extends JTextField {
-    private final ConnectionController connectionController;
 
     public NameTextField(ConnectionController connectionController) {
         super("Change your name");
-        this.connectionController = connectionController;
         setHorizontalAlignment(JTextField.HORIZONTAL);
         setBorder(new EmptyBorder(0,0,0,0));
         setOpaque(false);

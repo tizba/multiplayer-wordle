@@ -43,24 +43,12 @@ public class MessageReader extends Thread {
     private void handleMessage(ServerToClientMessage message) {
         System.out.println("Handling new message: " + message.getMessageType());
         switch (message.getMessageType()) {
-            case TOO_MANY_PLAYERS -> {
-                this.handleTooManyPlayers();
-            }
-            case SUCCESSFUL_CONNECTION -> {
-                this.handleSuccessfulConnection();
-            }
-            case SUCCESSFUL_DISCONNECTION -> {
-                this.handleSuccessfulDisconnection();
-            }
-            case OPPONENT_NAME -> {
-                this.handleNames((OpponentNameMessage) message);
-            }
-            case GAME_STATE_DATA -> {
-                this.handleGameState((GameStateMessage) message);
-            }
-            case SUBMISSION_ERROR -> {
-                this.handleSubmissionError((SubmissionErrorMessage) message);
-            }
+            case TOO_MANY_PLAYERS -> this.handleTooManyPlayers();
+            case SUCCESSFUL_CONNECTION -> this.handleSuccessfulConnection();
+            case SUCCESSFUL_DISCONNECTION -> this.handleSuccessfulDisconnection();
+            case OPPONENT_NAME -> this.handleNames((OpponentNameMessage) message);
+            case GAME_STATE_DATA -> this.handleGameState((GameStateMessage) message);
+            case SUBMISSION_ERROR -> this.handleSubmissionError((SubmissionErrorMessage) message);
         }
     }
 

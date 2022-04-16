@@ -5,7 +5,6 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.DisconnectMessage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.io.IOException;
 
@@ -22,11 +21,11 @@ public class MyMenuBar extends JMenuBar {
         JMenu menuConnection = new JMenu("Connection");
         menuConnection.setMnemonic('E');
         menuConnectTo = new JMenuItem("Connect to server…");
-        menuConnectTo.addActionListener(this::menuConnectTo);
+        menuConnectTo.addActionListener(event1 -> menuConnectTo());
         menuConnectTo.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
         menuDisconnect = new JMenuItem("Disconnect");
         menuDisconnect.setEnabled(false);
-        menuDisconnect.addActionListener(this::menuDisconnect);
+        menuDisconnect.addActionListener(event -> menuDisconnect());
         menuDisconnect.setAccelerator(KeyStroke.getKeyStroke('D', InputEvent.ALT_DOWN_MASK));
         menuConnection.add(menuConnectTo);
         menuConnection.add(menuDisconnect);
@@ -42,7 +41,7 @@ public class MyMenuBar extends JMenuBar {
         return menuDisconnect;
     }
 
-    private void menuConnectTo(ActionEvent event)  {
+    private void menuConnectTo()  {
         JTextField addressTextField = new JTextField("127.0.0.1");
         JTextField portTextField = new JTextField("5000");
         JPanel panel = new JPanel(new GridLayout(0, 1));
@@ -68,7 +67,7 @@ public class MyMenuBar extends JMenuBar {
         }
     }
 
-    private void menuDisconnect(ActionEvent event) {
+    private void menuDisconnect() {
         connectionController.sendMessage(new DisconnectMessage());
     }
 }

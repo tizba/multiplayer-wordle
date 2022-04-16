@@ -5,14 +5,7 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.ClientToServerMessa
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class MessageSender {
-    private final ConnectionController connectionController;
-    private final ObjectOutputStream objectOutputStream;
-
-    public MessageSender(ConnectionController connectionController, ObjectOutputStream objectOutputStream) {
-        this.connectionController = connectionController;
-        this.objectOutputStream = objectOutputStream;
-    }
+public record MessageSender(ObjectOutputStream objectOutputStream) {
 
     public void sendMessage(ClientToServerMessage message) {
         try {

@@ -11,7 +11,6 @@ import java.net.Socket;
 public class ConnectionController {
     private boolean connected = false;
     private Socket socket;
-    private MessageReader messageReader;
     private MessageSender messageSender;
     private final GUI gui;
 
@@ -23,10 +22,10 @@ public class ConnectionController {
         socket = new Socket(host, port);
         connected = true;
 
-        this.messageReader = new MessageReader(this, new ObjectInputStream(this.socket.getInputStream()));
-        this.messageReader.start();
+        MessageReader messageReader = new MessageReader(this, new ObjectInputStream(this.socket.getInputStream()));
+        messageReader.start();
 
-        this.messageSender = new MessageSender(this, new ObjectOutputStream(this.socket.getOutputStream()));
+        this.messageSender = new MessageSender(new ObjectOutputStream(this.socket.getOutputStream()));
     }
 
     public void sendMessage(ClientToServerMessage message) {
