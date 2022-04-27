@@ -13,20 +13,20 @@ public class NameTextField extends JTextField {
 
     public NameTextField(ConnectionController connectionController) {
         super("Change your name");
-        setHorizontalAlignment(JTextField.HORIZONTAL);
-        setBorder(new EmptyBorder(0,0,0,0));
+        setHorizontalAlignment(SwingConstants.HORIZONTAL);
+        setBorder(new EmptyBorder(0, 0, 0, 0));
         setOpaque(false);
         setFont(new Font("Arial", Font.PLAIN, 16));
 
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-
+                // Do nothing because we only want to send the new name to the server on keyReleased
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-
+                // Do nothing because we only want to send the new name to the server on keyReleased
             }
 
             @Override

@@ -1,7 +1,7 @@
 package fr.baptiste_masoud.multiplayer_wordle.server;
 
-import fr.baptiste_masoud.multiplayer_wordle.messages.MessageType;
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.ClientToServerMessage;
+import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.ClientToServerMessageType;
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SetNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.c_to_s.SubmissionMessage;
 
@@ -24,7 +24,7 @@ public class MessageReader extends Thread {
                 ClientToServerMessage message = (ClientToServerMessage) objectInputStream.readObject();
                 handleMessage(message);
 
-                if (message.getMessageType() != MessageType.SET_NAME)
+                if (message.getMessageType() != ClientToServerMessageType.SET_NAME)
                     player.getGame().sendGameStateMessage();
             } catch (IOException e) {
                 player.disconnect();

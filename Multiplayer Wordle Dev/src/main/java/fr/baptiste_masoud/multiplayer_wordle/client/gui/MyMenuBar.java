@@ -9,7 +9,7 @@ import java.awt.event.InputEvent;
 import java.io.IOException;
 
 public class MyMenuBar extends JMenuBar {
-    private final ConnectionController connectionController;
+    private final transient ConnectionController connectionController;
 
     private final JMenuItem menuConnectTo;
     private final JMenuItem menuDisconnect;

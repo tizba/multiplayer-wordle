@@ -4,6 +4,8 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.GameStateMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.OpponentNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.ServerToClientMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SubmissionErrorMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -12,6 +14,7 @@ import java.io.ObjectInputStream;
 public class MessageReader extends Thread {
     private final ObjectInputStream objectInputStream;
     private final ConnectionController connectionController;
+    private static final Logger messageReaderLogger = LogManager.getLogger(MessageReader.class);
 
     public MessageReader(ConnectionController connectionController, ObjectInputStream objectInputStream) {
         this.connectionController = connectionController;
@@ -41,7 +44,7 @@ public class MessageReader extends Thread {
     }
 
     private void handleMessage(ServerToClientMessage message) {
-        System.out.println("Handling new message: " + message.getMessageType());
+        messageReaderLogger.debug("Handling new message: {}", message.getMessageType());
         switch (message.getMessageType()) {
             case TOO_MANY_PLAYERS -> this.handleTooManyPlayers();
             case SUCCESSFUL_CONNECTION -> this.handleSuccessfulConnection();

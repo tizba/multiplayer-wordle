@@ -23,7 +23,7 @@ public class SubmissionRow extends JPanel {
         setAndAddSubmissionLabels(submittedWord);
         setLabelsColors(submissionValidity);
     }
-    
+
     private void setAndAddSubmissionLabels(String submittedWord) {
         // if submittedWord is null
         if (submittedWord == null) {
@@ -52,10 +52,11 @@ public class SubmissionRow extends JPanel {
         if (submissionValidity != null) {
             for (int i = 0; i < submissionValidity.length; i++) {
                 Color backgroundColor = Color.gray.brighter();
-                switch (submissionValidity[i]) {
-                    case IN_WORD -> backgroundColor = Color.orange;
-                    case IN_PLACE -> backgroundColor = Color.green.darker();
-                }
+                if (submissionValidity[i] == LetterValidity.IN_WORD)
+                    backgroundColor = Color.orange;
+                else if (submissionValidity[i] == LetterValidity.IN_PLACE)
+                    backgroundColor = Color.green.darker();
+
                 submissionLabels[i].setBackground(backgroundColor);
 
                 if (Objects.equals(submissionLabels[i].getText(), "%"))

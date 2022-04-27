@@ -9,6 +9,9 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulDisconnec
 import fr.baptiste_masoud.multiplayer_wordle.server.Player;
 import fr.baptiste_masoud.multiplayer_wordle.server.Server;
 
+import java.util.List;
+import java.util.Random;
+
 
 public class Game {
     private final Player[] players = new Player[2];
@@ -17,12 +20,20 @@ public class Game {
 
     private Round round;
 
-    public Game(Server server) {
+    private static final Random random = new Random();
+    private final List<String> words;
+
+    public Game(Server server, List<String> words) {
         this.server = server;
+        this.words = words;
+    }
+
+    private static String getRandomWord(List<String> words) {
+        return words.get(random.nextInt(words.size()));
     }
 
     public void start() {
-        this.round = new Round(players, "Should");
+        this.round = new Round(players, getRandomWord(words));
         this.running = true;
     }
 
@@ -41,7 +52,7 @@ public class Game {
             players[0] = player;
         } else if (players[1] == null) {
             players[1] = player;
-        } else throw new RuntimeException("Can’t add a player to a game that is full !");
+        } else throw new GameIsFullException("Can’t add a player to a game that is full !");
 
         player.acceptConnection();
 

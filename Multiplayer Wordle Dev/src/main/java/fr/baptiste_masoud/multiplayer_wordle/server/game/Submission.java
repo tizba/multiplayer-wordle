@@ -9,7 +9,8 @@ public class Submission {
     private final boolean correct;
 
     public Submission(String wordToDiscover, String submittedWord) {
-        assert (wordToDiscover.length() == submittedWord.length());
+        if (wordToDiscover.length() == submittedWord.length())
+            throw new SubmissionLengthException(wordToDiscover + " and " + submittedWord + " are not the same length");
         String wordToDiscover1 = wordToDiscover.toUpperCase();
         this.submittedWord = submittedWord.toUpperCase();
         this.validity = initValidity(wordToDiscover1, this.submittedWord);
@@ -25,22 +26,24 @@ public class Submission {
     }
 
     private LetterValidity[] initValidity(String wordToDiscover, String submittedWord) {
-        LetterValidity[] validity = new LetterValidity[submittedWord.length()];
+        LetterValidity[] letterValidities = new LetterValidity[submittedWord.length()];
 
         // find all in place characters
-        for (int i = 0; i < validity.length; i++) {
+        for (int i = 0; i < letterValidities.length; i++) {
             char currentLetter = submittedWord.toCharArray()[i];
             if (currentLetter == wordToDiscover.toCharArray()[i]) {
-                validity[i] = LetterValidity.IN_PLACE;
+                letterValidities[i] = LetterValidity.IN_PLACE;
             } else {
-                validity[i] = null;
+                letterValidities[i] = null;
             }
 
         }
 
-        String notInPlaceWordToDiscover = wordToDiscover, notInPlaceSubmittedWord = submittedWord;
-        for (int i = 0; i < validity.length; i++) {
-            if(validity[i] == LetterValidity.IN_PLACE) {
+        String notInPlaceWordToDiscover = wordToDiscover;
+        String notInPlaceSubmittedWord = submittedWord;
+
+        for (int i = 0; i < letterValidities.length; i++) {
+            if (letterValidities[i] == LetterValidity.IN_PLACE) {
                 char[] chars = notInPlaceSubmittedWord.toCharArray();
                 chars[i] = '%';
                 notInPlaceSubmittedWord = String.valueOf(chars);
@@ -51,20 +54,20 @@ public class Submission {
             }
         }
 
-        for (int i = 0; i < validity.length; i++) {
+        for (int i = 0; i < letterValidities.length; i++) {
             if (notInPlaceSubmittedWord.toCharArray()[i] == '%')
                 continue;
 
             int indexOfCurrentChar = notInPlaceWordToDiscover.indexOf(notInPlaceSubmittedWord.toCharArray()[i]);
             if (indexOfCurrentChar == -1) {
-                validity[i] = LetterValidity.NOT_IN_WORD;
+                letterValidities[i] = LetterValidity.NOT_IN_WORD;
 
                 char[] chars = notInPlaceSubmittedWord.toCharArray();
                 chars[i] = '%';
                 notInPlaceSubmittedWord = String.valueOf(chars);
 
             } else {
-                validity[i] = LetterValidity.IN_WORD;
+                letterValidities[i] = LetterValidity.IN_WORD;
 
                 char[] chars = notInPlaceSubmittedWord.toCharArray();
                 chars[i] = '%';
@@ -77,7 +80,7 @@ public class Submission {
             }
         }
 
-        return validity;
+        return letterValidities;
     }
 
     private boolean checkIfCorrect(LetterValidity[] submissionValidity) {

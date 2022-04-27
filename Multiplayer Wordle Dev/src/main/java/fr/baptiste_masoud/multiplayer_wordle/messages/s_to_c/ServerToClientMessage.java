@@ -1,11 +1,15 @@
 package fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c;
 
-import fr.baptiste_masoud.multiplayer_wordle.messages.Message;
-import fr.baptiste_masoud.multiplayer_wordle.messages.MessageType;
+import java.io.Serializable;
 
-public abstract class ServerToClientMessage extends Message {
+public abstract class ServerToClientMessage implements Serializable {
+    private final ServerToClientMessageType messageType;
 
-    public ServerToClientMessage(MessageType messageType) {
-        super(messageType);
+    protected ServerToClientMessage(ServerToClientMessageType messageType) {
+        this.messageType = messageType;
+    }
+
+    public ServerToClientMessageType getMessageType() {
+        return messageType;
     }
 }

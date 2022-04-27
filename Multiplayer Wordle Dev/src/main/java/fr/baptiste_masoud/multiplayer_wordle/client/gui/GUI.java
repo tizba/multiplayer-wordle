@@ -1,13 +1,13 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.gui;
 
-import fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel.WordlePanel;
 import fr.baptiste_masoud.multiplayer_wordle.client.connection_controller.ConnectionController;
+import fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel.WordlePanel;
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.GameStateData;
 
 import javax.swing.*;
 
 public class GUI extends JFrame {
-    private final MyMenuBar menuBar;
+    private final MyMenuBar myMenuBar;
     private final WordlePanel wordlePanel;
 
     public GUI() {
@@ -15,10 +15,10 @@ public class GUI extends JFrame {
         ConnectionController connectionController = new ConnectionController(this);
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(800,800);
+        setSize(800, 800);
 
-        this.menuBar = new MyMenuBar(connectionController);
-        setJMenuBar(menuBar);
+        this.myMenuBar = new MyMenuBar(connectionController);
+        setJMenuBar(myMenuBar);
 
         this.wordlePanel = new WordlePanel(connectionController);
         this.setContentPane(wordlePanel);
@@ -32,7 +32,7 @@ public class GUI extends JFrame {
     }
 
     public MyMenuBar getMyMenuBar() {
-        return menuBar;
+        return myMenuBar;
     }
 
     public void updateWithGameStateData(GameStateData gameStateData) {

@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 public class SubmitTextField extends JTextField {
     public SubmitTextField(ConnectionController connectionController) {
         this.setFont(new Font("Arial", Font.PLAIN, 28));
-        this.setHorizontalAlignment(JTextField.HORIZONTAL);
+        this.setHorizontalAlignment(SwingConstants.HORIZONTAL);
 
         addKeyListener(new KeyAdapter() {
             @Override

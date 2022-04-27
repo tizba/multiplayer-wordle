@@ -56,8 +56,8 @@ public class PlayerPanel extends JPanel {
         this.submissionErrorLabel = new JLabel("");
         this.submissionErrorLabel.setVisible(false);
         this.submissionErrorLabel.setForeground(Color.red.darker());
-        this.submissionErrorLabel.setHorizontalAlignment(JLabel.CENTER);
-        this.submissionErrorLabel.setVerticalAlignment(JLabel.CENTER);
+        this.submissionErrorLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        this.submissionErrorLabel.setVerticalAlignment(SwingConstants.CENTER);
         // place submissionErrorLabel
         constraints = new GridBagConstraints();
         constraints.gridy = 8;
