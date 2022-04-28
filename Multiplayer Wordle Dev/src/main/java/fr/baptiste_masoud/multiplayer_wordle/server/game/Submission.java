@@ -9,7 +9,7 @@ public class Submission {
     private final boolean correct;
 
     public Submission(String wordToDiscover, String submittedWord) {
-        if (wordToDiscover.length() == submittedWord.length())
+        if (wordToDiscover.length() != submittedWord.length())
             throw new SubmissionLengthException(wordToDiscover + " and " + submittedWord + " are not the same length");
         String wordToDiscover1 = wordToDiscover.toUpperCase();
         this.submittedWord = submittedWord.toUpperCase();
