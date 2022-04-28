@@ -50,6 +50,10 @@ public class MessageReader extends Thread {
                 SubmissionMessage submissionMessage = (SubmissionMessage) message;
                 player.getGame().addSubmission(player, submissionMessage.getSubmittedWord());
             }
+
+            case CONTINUE -> {
+                // TODO
+            }
         }
     }
 }

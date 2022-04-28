@@ -12,6 +12,7 @@ public class PlayerPanel extends JPanel {
     protected final NameTextField nameTextField;
     protected final JTextField submitTextField;
     protected final JLabel submissionErrorLabel;
+    protected final JButton continueButton;
 
     public PlayerPanel(ConnectionController connectionController) {
 
@@ -52,6 +53,18 @@ public class PlayerPanel extends JPanel {
         constraints.fill = GridBagConstraints.BOTH;
         add(submitTextField, constraints);
 
+        // init continueButton
+        this.continueButton = new ContinueButton(connectionController);
+        this.continueButton.setVisible(false);
+        // place continueButton
+        constraints = new GridBagConstraints();
+        constraints.gridy = 7;
+        constraints.weighty = 0.1;
+        constraints.weightx = 1;
+        constraints.gridheight = 1;
+        constraints.fill = GridBagConstraints.BOTH;
+        add(continueButton, constraints);
+
         // init submissionErrorLabel
         this.submissionErrorLabel = new JLabel("");
         this.submissionErrorLabel.setVisible(false);
@@ -84,6 +97,10 @@ public class PlayerPanel extends JPanel {
         } else {
             submitTextField.setVisible(true);
             submissionErrorLabel.setVisible(true);
+        }
+
+        if (roundData.playerHasFinished() && roundData.opponentHasFinished()) {
+            this.continueButton.setVisible(true);
         }
 
     }
