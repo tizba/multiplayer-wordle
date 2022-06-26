@@ -1,7 +1,7 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel;
 
 import fr.baptiste_masoud.multiplayer_wordle.client.connection_controller.ConnectionController;
-import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.RoundData;
+import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.GameStateData;
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.SubmissionData;
 
 import javax.swing.border.EmptyBorder;
@@ -18,14 +18,14 @@ public class OpponentPlayerPanel extends PlayerPanel {
     }
 
     @Override
-    public void updateWithGameState(RoundData roundData) {
+    public void updateWithGameState(GameStateData gameStateData) {
         // update submissions
         submissionsPanel.removeAll();
-        for (SubmissionData submission: roundData.opponentSubmissions()) {
+        for (SubmissionData submission: gameStateData.currentRound().opponentSubmissions()) {
             submissionsPanel.addSubmission(submission);
         }
 
-        if (roundData.playerHasFinished()) {
+        if (gameStateData.currentRound().playerHasFinished()) {
             submitTextField.setVisible(false);
             submissionErrorLabel.setVisible(false);
         } else {

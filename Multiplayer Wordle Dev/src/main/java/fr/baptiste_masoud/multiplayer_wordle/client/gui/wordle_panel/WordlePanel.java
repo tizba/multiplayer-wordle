@@ -9,7 +9,7 @@ import java.awt.*;
 
 public class WordlePanel extends JPanel {
     private final PlayerPanel playerPanel;
-    private final PlayerPanel opponentPanel;
+    private final OpponentPlayerPanel opponentPanel;
 
     public WordlePanel(ConnectionController connectionController) {
         this.setLayout(new GridLayout(1, 2, 50, 0));
@@ -26,15 +26,15 @@ public class WordlePanel extends JPanel {
 
     public void updateWithGameState(GameStateData gameStateData) {
         if (gameStateData.currentRound() == null) return;
-        this.playerPanel.updateWithGameState(gameStateData.currentRound());
-        this.opponentPanel.updateWithGameState(gameStateData.currentRound());
+        this.playerPanel.updateWithGameState(gameStateData);
+        this.opponentPanel.updateWithGameState(gameStateData);
     }
 
     public PlayerPanel getPlayerPanel() {
         return playerPanel;
     }
 
-    public PlayerPanel getOpponentPanel() {
+    public OpponentPlayerPanel getOpponentPanel() {
         return opponentPanel;
     }
 }

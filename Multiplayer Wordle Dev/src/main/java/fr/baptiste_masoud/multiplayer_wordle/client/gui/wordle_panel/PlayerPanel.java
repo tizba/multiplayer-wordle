@@ -1,7 +1,7 @@
 package fr.baptiste_masoud.multiplayer_wordle.client.gui.wordle_panel;
 
 import fr.baptiste_masoud.multiplayer_wordle.client.connection_controller.ConnectionController;
-import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.RoundData;
+import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.GameStateData;
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.SubmissionData;
 
 import javax.swing.*;
@@ -84,14 +84,14 @@ public class PlayerPanel extends JPanel {
         return nameTextField;
     }
 
-    public void updateWithGameState(RoundData roundData) {
+    public void updateWithGameState(GameStateData gameStateData) {
         // update submissions
         submissionsPanel.removeAll();
-        for (SubmissionData submission: roundData.playerSubmissions()) {
+        for (SubmissionData submission: gameStateData.currentRound().playerSubmissions()) {
             submissionsPanel.addSubmission(submission);
         }
 
-        if (roundData.playerHasFinished()) {
+        if (gameStateData.currentRound().playerHasFinished()) {
             submitTextField.setVisible(false);
             submissionErrorLabel.setVisible(false);
         } else {
@@ -99,9 +99,14 @@ public class PlayerPanel extends JPanel {
             submissionErrorLabel.setVisible(true);
         }
 
-        if (roundData.playerHasFinished() && roundData.opponentHasFinished()) {
+        if (gameStateData.currentRound().playerHasFinished() && gameStateData.currentRound().opponentHasFinished()) {
             this.continueButton.setVisible(true);
+        } else {
+            this.continueButton.setVisible(false);
         }
+
+        if (gameStateData.playerWantsToContinue())
+            continueButton.setVisible(false);
 
     }
 

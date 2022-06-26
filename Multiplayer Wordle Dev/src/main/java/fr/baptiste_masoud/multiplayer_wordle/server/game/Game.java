@@ -9,14 +9,18 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SuccessfulDisconnec
 import fr.baptiste_masoud.multiplayer_wordle.server.Player;
 import fr.baptiste_masoud.multiplayer_wordle.server.Server;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 
 public class Game {
     private final Player[] players = new Player[2];
     private final Server server;
     private boolean running = false;
+
+    private final HashMap<UUID, Boolean> wantsToContinue;
 
     private Round round;
 
@@ -26,14 +30,33 @@ public class Game {
     public Game(Server server, List<String> words) {
         this.server = server;
         this.words = words;
+
+        // init wantsToContinue HashMap
+        this.wantsToContinue = new HashMap<>();
+    }
+
+    public void setWantsToContinue(Player player, boolean wantsToContinue) {
+        this.wantsToContinue.put(player.getUuid(), wantsToContinue);
+
+        if (this.wantsToContinue.get(player.getUuid()) && this.wantsToContinue.get(getOpponentOf(player).getUuid())) {
+            this.startNewRound();
+        }
+
     }
 
     private static String getRandomWord(List<String> words) {
         return words.get(random.nextInt(words.size()));
     }
 
-    public void start() {
+    private void startNewRound() {
+        for (Player player: players)
+            this.wantsToContinue.put(player.getUuid(), false);
+
         this.round = new Round(players, getRandomWord(words));
+    }
+
+    public void start() {
+        startNewRound();
         this.running = true;
     }
 
@@ -61,7 +84,6 @@ public class Game {
         }
 
         sendGameStateMessage();
-
     }
 
     /**
@@ -87,8 +109,22 @@ public class Game {
      * @return the GameStateData that needs to be sent to the PlayerClient parameter via a GameStateMessage
      */
     private GameStateData getGameStateData(Player player) {
+        boolean playerWantsToContinue = (round != null) &&
+                wantsToContinue.get(player.getUuid());
+        boolean opponentWantsToContinue = (round != null) &&
+                wantsToContinue.get(getOpponentOf(player).getUuid());
+
         RoundData roundData = (round != null) ? round.getRoundData(player) : null;
-        return new GameStateData(this.running, roundData);
+
+        return new GameStateData(this.running, playerWantsToContinue, opponentWantsToContinue, roundData);
+    }
+
+    /**
+     * @param player the player for which we need his opponent
+     * @return the opponent of the player
+     */
+    public Player getOpponentOf(Player player) {
+        return player == players[0] ? players[1] : players[0];
     }
 
     /**

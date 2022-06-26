@@ -4,6 +4,7 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.TooManyPlayersMessa
 import fr.baptiste_masoud.multiplayer_wordle.server.game.Game;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -86,6 +87,7 @@ public class Server {
                 String input = scanner.next();
                 if (Objects.equals(input.toUpperCase(), "STOP")) {
                     running = false;
+                    System.exit(0);
                 }
             }
         }

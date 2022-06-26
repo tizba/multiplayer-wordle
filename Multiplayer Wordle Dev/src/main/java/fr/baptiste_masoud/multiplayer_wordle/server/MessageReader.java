@@ -38,7 +38,7 @@ public class MessageReader extends Thread {
     private void handleMessage(ClientToServerMessage message) {
         switch (message.getMessageType()) {
             case DISCONNECT ->
-                player.getGame().end();
+                    player.getGame().end();
 
             case SET_NAME -> {
                 SetNameMessage setNameMessage = (SetNameMessage) message;
@@ -52,8 +52,9 @@ public class MessageReader extends Thread {
             }
 
             case CONTINUE -> {
-                // TODO
+                player.getGame().setWantsToContinue(player, true);
             }
+
         }
     }
 }
