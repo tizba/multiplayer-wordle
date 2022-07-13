@@ -28,9 +28,9 @@ public class Server {
 
     private List<String> initWords() throws IOException {
         List<String> localWordList = new ArrayList<>();
-        InputStream inputStream = Server.class.getClassLoader().getResourceAsStream("liste_mots.txt");
+        InputStream inputStream = Server.class.getClassLoader().getResourceAsStream("words_list.txt");
         if (inputStream == null) {
-            throw new FileNotFoundException("liste_mots.txt not found in resources folder");
+            throw new FileNotFoundException("words_list.txt not found in resources folder");
         }
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 

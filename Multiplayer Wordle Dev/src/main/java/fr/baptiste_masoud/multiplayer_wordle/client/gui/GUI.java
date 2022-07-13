@@ -9,6 +9,7 @@ import javax.swing.*;
 public class GUI extends JFrame {
     private final MyMenuBar myMenuBar;
     private final WordlePanel wordlePanel;
+    private final JLabel waitingLabel;
 
     public GUI() {
         super("Multiplayer Wordle");
@@ -21,9 +22,11 @@ public class GUI extends JFrame {
         setJMenuBar(myMenuBar);
 
         this.wordlePanel = new WordlePanel(connectionController);
-        this.setContentPane(wordlePanel);
         this.wordlePanel.setVisible(false);
 
+        this.waitingLabel = new JLabel("Waiting for opponent...", SwingConstants.CENTER);
+        this.setContentPane(waitingLabel);
+        this.waitingLabel.setVisible(false);
         setVisible(true);
     }
 
@@ -36,13 +39,17 @@ public class GUI extends JFrame {
     }
 
     public void updateWithGameStateData(GameStateData gameStateData) {
+        this.waitingLabel.setVisible(gameStateData.waitingForOpponent());
+
         // when the game is launched
         if (gameStateData.running() && !wordlePanel.isVisible()) {
+            this.setContentPane(wordlePanel);
             wordlePanel.setVisible(true);
         }
 
         // when the game stops
         if (!gameStateData.running()) {
+            this.setContentPane(this.waitingLabel);
             wordlePanel.setVisible(false);
         }
 

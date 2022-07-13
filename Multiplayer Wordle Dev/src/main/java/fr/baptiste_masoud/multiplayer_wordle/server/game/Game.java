@@ -111,12 +111,10 @@ public class Game {
     private GameStateData getGameStateData(Player player) {
         boolean playerWantsToContinue = (round != null) &&
                 wantsToContinue.get(player.getUuid());
-        boolean opponentWantsToContinue = (round != null) &&
-                wantsToContinue.get(getOpponentOf(player).getUuid());
 
         RoundData roundData = (round != null) ? round.getRoundData(player) : null;
 
-        return new GameStateData(this.running, playerWantsToContinue, opponentWantsToContinue, roundData);
+        return new GameStateData(this.running, !this.isFullOfPlayers(), playerWantsToContinue, roundData);
     }
 
     /**
@@ -171,17 +169,9 @@ public class Game {
                 && submittedWord.length() == round.getWordToDiscover().length()) {
             this.round.addSubmission(player, submittedWord);
         }
-        // if not, detect the error and sends it
+        // if not, sends an error
         else {
-            String error = "Error";
-            if (round == null)
-                error = "The round has not started yet";
-            else if (round.didPlayerFinished(player))
-                error = "You have finished this round";
-            else if (submittedWord.length() != round.getWordToDiscover().length())
-                error = "Impossible to submit \"" + submittedWord + "\" because it is not " + round.getWordToDiscover().length() + " letters long";
-
-            player.getMessageSender().sendMessage(new SubmissionErrorMessage(error));
+            player.getMessageSender().sendMessage(new SubmissionErrorMessage());
         }
     }
 }

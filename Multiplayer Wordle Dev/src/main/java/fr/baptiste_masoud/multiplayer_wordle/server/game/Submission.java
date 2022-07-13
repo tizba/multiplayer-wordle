@@ -26,7 +26,7 @@ public class Submission {
     }
 
     private LetterValidity[] initValidity(String wordToDiscover, String submittedWord) {
-        LetterValidity[] letterValidities = new LetterValidity[submittedWord.length()];
+        @SuppressWarnings("SpellCheckingInspection") LetterValidity[] letterValidities = new LetterValidity[submittedWord.length()];
 
         // find all in place characters
         for (int i = 0; i < letterValidities.length; i++) {

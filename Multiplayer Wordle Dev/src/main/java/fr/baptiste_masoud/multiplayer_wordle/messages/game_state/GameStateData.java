@@ -5,6 +5,6 @@ import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
 
 public record GameStateData(boolean running,
+                            boolean waitingForOpponent,
                             boolean playerWantsToContinue,
-                            boolean opponentWantsToContinue,
                             @Nullable RoundData currentRound) implements Serializable {}
