@@ -20,7 +20,7 @@ public class MyMenuBar extends JMenuBar {
         // Connection JMenu
         JMenu menuConnection = new JMenu("Connection");
         menuConnection.setMnemonic('E');
-        menuConnectTo = new JMenuItem("Connect to server…");
+        menuConnectTo = new JMenuItem("Connect to server...");
         menuConnectTo.addActionListener(event1 -> menuConnectTo());
         menuConnectTo.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.ALT_DOWN_MASK));
         menuDisconnect = new JMenuItem("Disconnect");
@@ -58,8 +58,8 @@ public class MyMenuBar extends JMenuBar {
                 this.menuDisconnect.setEnabled(true);
             } catch (IOException e) {
                 panel = new JPanel();
-                panel.add(new JLabel("Connection to server failed, verify address and port…"));
-                JOptionPane.showConfirmDialog(null, panel, "Connection to server failed…",
+                panel.add(new JLabel("Connection to server failed, verify address and port..."));
+                JOptionPane.showConfirmDialog(null, panel, "Connection to server failed...",
                         JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE);
                 this.menuDisconnect.setEnabled(false);
                 this.menuConnectTo.setEnabled(true);

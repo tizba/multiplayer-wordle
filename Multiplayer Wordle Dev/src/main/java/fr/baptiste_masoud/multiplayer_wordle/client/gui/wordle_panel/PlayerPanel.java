@@ -5,13 +5,14 @@ import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.GameStateData;
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.SubmissionData;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.util.TimerTask;
 
 public class PlayerPanel extends JPanel {
     protected final SubmissionsPanel submissionsPanel;
     protected final NameTextField nameTextField;
-    protected final JTextField submitTextField;
-    protected final JLabel submissionErrorLabel;
+    protected final SubmitTextField submitTextField;
     protected final JButton continueButton;
 
     public PlayerPanel(ConnectionController connectionController) {
@@ -27,6 +28,7 @@ public class PlayerPanel extends JPanel {
         constraints.weighty = 0.1;
         constraints.weightx = 1;
         constraints.gridy = 0;
+        constraints.gridheight = 1;
         constraints.ipady = constraints.ipadx = 20;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         add(nameTextField, constraints);
@@ -58,26 +60,12 @@ public class PlayerPanel extends JPanel {
         this.continueButton.setVisible(false);
         // place continueButton
         constraints = new GridBagConstraints();
-        constraints.gridy = 7;
+        constraints.gridy = 8;
         constraints.weighty = 0.1;
         constraints.weightx = 1;
         constraints.gridheight = 1;
         constraints.fill = GridBagConstraints.BOTH;
         add(continueButton, constraints);
-
-        // init submissionErrorLabel
-        this.submissionErrorLabel = new JLabel("");
-        this.submissionErrorLabel.setVisible(false);
-        this.submissionErrorLabel.setForeground(Color.red.darker());
-        this.submissionErrorLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.submissionErrorLabel.setVerticalAlignment(SwingConstants.CENTER);
-        // place submissionErrorLabel
-        constraints = new GridBagConstraints();
-        constraints.gridy = 8;
-        constraints.weighty = 0.1;
-        constraints.weightx = 1;
-        constraints.fill = GridBagConstraints.BOTH;
-        add(submissionErrorLabel, constraints);
     }
 
     public NameTextField getNameTextField() {
@@ -87,22 +75,15 @@ public class PlayerPanel extends JPanel {
     public void updateWithGameState(GameStateData gameStateData) {
         // update submissions
         submissionsPanel.removeAll();
-        for (SubmissionData submission: gameStateData.currentRound().playerSubmissions()) {
-            submissionsPanel.addSubmission(submission);
-        }
+        if (gameStateData.currentRound() != null) {
+            for (SubmissionData submission : gameStateData.currentRound().playerSubmissions()) {
+                submissionsPanel.addSubmission(submission);
+            }
 
-        if (gameStateData.currentRound().playerHasFinished()) {
-            submitTextField.setVisible(false);
-            submissionErrorLabel.setVisible(false);
-        } else {
-            submitTextField.setVisible(true);
-            submissionErrorLabel.setVisible(true);
-        }
+            submitTextField.setVisible(!gameStateData.currentRound().playerHasFinished());
 
-        if (gameStateData.currentRound().playerHasFinished() && gameStateData.currentRound().opponentHasFinished()) {
-            this.continueButton.setVisible(true);
-        } else {
-            this.continueButton.setVisible(false);
+            this.continueButton.setVisible(gameStateData.currentRound().playerHasFinished()
+                    && gameStateData.currentRound().opponentHasFinished());
         }
 
         if (gameStateData.playerWantsToContinue())
@@ -110,8 +91,21 @@ public class PlayerPanel extends JPanel {
 
     }
 
-    public void setSubmissionErrorLabelText(String error) {
-        this.submissionErrorLabel.setVisible(true);
-        this.submissionErrorLabel.setText(error);
+    public void handleError() {
+        this.submitTextField.setBorder(new LineBorder(Color.red));
+        new java.util.Timer().schedule(new ErrorColorTask(this.submitTextField), 2000);
+    }
+
+    private static class ErrorColorTask extends TimerTask {
+        private final SubmitTextField submitTextField;
+
+        private ErrorColorTask(SubmitTextField submitTextField) {
+            this.submitTextField = submitTextField;
+        }
+
+        @Override
+        public void run() {
+            this.submitTextField.setBorder(new LineBorder(Color.gray));
+        }
     }
 }

@@ -22,8 +22,6 @@ public class SubmitTextField extends JTextField {
         });
 
         addActionListener(e -> {
-            PlayerPanel playerPanel = (PlayerPanel) getParent();
-            playerPanel.setSubmissionErrorLabelText("");
             connectionController.sendMessage(new SubmissionMessage(getText()));
             setText("");
         });

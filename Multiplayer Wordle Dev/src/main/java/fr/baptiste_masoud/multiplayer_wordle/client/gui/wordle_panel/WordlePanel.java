@@ -30,11 +30,11 @@ public class WordlePanel extends JPanel {
         this.opponentPanel.updateWithGameState(gameStateData);
     }
 
-    public PlayerPanel getPlayerPanel() {
-        return playerPanel;
-    }
-
     public OpponentPlayerPanel getOpponentPanel() {
         return opponentPanel;
+    }
+
+    public PlayerPanel getPlayerPanel() {
+        return this.playerPanel;
     }
 }

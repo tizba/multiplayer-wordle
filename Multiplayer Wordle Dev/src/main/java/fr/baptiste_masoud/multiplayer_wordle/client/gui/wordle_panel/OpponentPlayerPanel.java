@@ -12,25 +12,21 @@ public class OpponentPlayerPanel extends PlayerPanel {
         nameTextField.setEditable(false);
         nameTextField.setText("Opponent name");
         submitTextField.setOpaque(false);
-        submitTextField.setBorder(new EmptyBorder(0, 0,0,0));
+        submitTextField.setBorder(new EmptyBorder(2, 2, 2, 2));
         submitTextField.setEnabled(false);
-        submissionErrorLabel.setVisible(true);
     }
 
     @Override
     public void updateWithGameState(GameStateData gameStateData) {
         // update submissions
         submissionsPanel.removeAll();
-        for (SubmissionData submission: gameStateData.currentRound().opponentSubmissions()) {
-            submissionsPanel.addSubmission(submission);
+        if (gameStateData.currentRound() != null) {
+            for (SubmissionData submission : gameStateData.currentRound().opponentSubmissions()) {
+                submissionsPanel.addSubmission(submission);
+            }
+
+            submitTextField.setVisible(!gameStateData.currentRound().playerHasFinished());
         }
 
-        if (gameStateData.currentRound().playerHasFinished()) {
-            submitTextField.setVisible(false);
-            submissionErrorLabel.setVisible(false);
-        } else {
-            submitTextField.setVisible(true);
-            submissionErrorLabel.setVisible(true);
-        }
     }
 }

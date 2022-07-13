@@ -9,7 +9,6 @@ public class SubmissionsPanel extends JPanel {
 
     public SubmissionsPanel() {
         setLayout(new GridLayout(6,1, 0, 10));
-        setBackground(Color.black);
     }
 
     public void addSubmission(SubmissionData submission) {

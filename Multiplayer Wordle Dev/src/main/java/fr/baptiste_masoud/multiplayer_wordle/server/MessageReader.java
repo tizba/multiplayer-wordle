@@ -51,9 +51,7 @@ public class MessageReader extends Thread {
                 player.getGame().addSubmission(player, submissionMessage.getSubmittedWord());
             }
 
-            case CONTINUE -> {
-                player.getGame().setWantsToContinue(player, true);
-            }
+            case CONTINUE -> player.getGame().setWantsToContinue(player, true);
 
         }
     }

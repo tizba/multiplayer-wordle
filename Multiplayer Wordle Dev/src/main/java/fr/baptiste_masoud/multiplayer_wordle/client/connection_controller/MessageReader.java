@@ -3,7 +3,6 @@ package fr.baptiste_masoud.multiplayer_wordle.client.connection_controller;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.GameStateMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.OpponentNameMessage;
 import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.ServerToClientMessage;
-import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SubmissionErrorMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,12 +50,12 @@ public class MessageReader extends Thread {
             case SUCCESSFUL_DISCONNECTION -> this.handleSuccessfulDisconnection();
             case OPPONENT_NAME -> this.handleNames((OpponentNameMessage) message);
             case GAME_STATE_DATA -> this.handleGameState((GameStateMessage) message);
-            case SUBMISSION_ERROR -> this.handleSubmissionError((SubmissionErrorMessage) message);
+            case SUBMISSION_ERROR -> this.handleSubmissionError();
         }
     }
 
-    private void handleSubmissionError(SubmissionErrorMessage message) {
-        connectionController.getGui().getWordlePanel().getPlayerPanel().setSubmissionErrorLabelText(message.getError());
+    private void handleSubmissionError() {
+        connectionController.getGui().getWordlePanel().getPlayerPanel().handleError();
     }
 
     private void handleTooManyPlayers() {
