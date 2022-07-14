@@ -166,7 +166,6 @@ public class Game {
         // and the player has not finished yet
         // and the submitted word has the same length as the word to discover
         // and the submitted word is a word without special chars
-
         if (round != null
                 && !round.didPlayerFinished(player)
                 && submittedWord.length() == round.getWordToDiscover().length()
