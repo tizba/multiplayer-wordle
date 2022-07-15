@@ -1,6 +1,10 @@
 # Multiplayer Wordle
 An online and real-time multiplayer Wordle game written in plain Java 17. The only libraries used are Log4j and JUnit.
 
+## Architecture
+3 UML Class Diagrams (one for each package) can be found in [this folder](https://github.com/tizba/multiplayer-wordle/tree/main/UML%20Class%20Diagrams).  
+These are super useful to understand the clean architecture of the project
+
 ## Requirements
 Java Runtime Environment (JRE) version 8. That can be downloaded [here](https://www.java.com/fr/download/manual.jsp).
 
