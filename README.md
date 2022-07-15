@@ -11,29 +11,29 @@ The .jar can be found [here](https://github.com/tizba/multiplayer-wordle/release
 ___
 - Run a server and 2 clients (default). The server will listen on port 5000
 ```
-    java -jar //todo
+    java -jar multiplayer-wordle-1.0.0.jar
 ```
 ___
 - Run a server. The server will listen on port 5000
 ```
-    java -jar //todo server
+    java -jar multiplayer-wordle-1.0.0.jar server
 ```
 ___
 - Run a server listening on a specific port
 ```
-    java -jar //todo server <port>
+    java -jar multiplayer-wordle-1.0.0.jar server <port>
 ```
 Example
 ```
-    jara -jar //todo server 6789
+    jara -jar multiplayer-wordle-1.0.0.jar server 6789
 ```
 ___
 - Run a client
 ```
-    java -jar //todo client
+    java -jar multiplayer-wordle-1.0.0.jar client
 ```
 ___
 - Run 2 clients
 ```
-    java -jar //todo client client
+    java -jar multiplayer-wordle-1.0.0.jar client client
 ```
