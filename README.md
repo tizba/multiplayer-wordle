@@ -1,4 +1,4 @@
-# Multiplayer Wordle
+# Online Multiplayer Wordle
 An online and real-time multiplayer Wordle game written in plain Java 17. The only libraries used are Log4j and JUnit.
 
 If you don't know what Wordle is, you can check the original singleplayer game [here](https://www.nytimes.com/games/wordle/index.html).
