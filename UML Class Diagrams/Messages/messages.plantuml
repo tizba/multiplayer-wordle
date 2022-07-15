@@ -1,0 +1,110 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class ClientToServerMessage {
+  - messageType: ClientToServerMessageType
+  + getMessageType(): ClientToServerMessageType
+}
+enum ClientToServerMessageType << enumeration >> {
+  + CONTINUE: 
+  + SUBMISSION: 
+  + DISCONNECT: 
+  + SET_NAME: 
+  + valueOf(String): ClientToServerMessageType
+  + values(): ClientToServerMessageType[]
+}
+class ContinueMessage
+class DisconnectMessage
+entity GameStateData << record >> {
+  - running: boolean
+  - currentRound: RoundData?
+  - playerWantsToContinue: boolean
+  - waitingForOpponent: boolean
+  + running(): boolean
+  + waitingForOpponent(): boolean
+  + playerWantsToContinue(): boolean
+  + currentRound(): RoundData?
+}
+class GameStateMessage {
+  - gameStateData: GameStateData
+  + getGameStateData(): GameStateData
+}
+enum LetterValidity << enumeration >> {
+  + NOT_IN_WORD: 
+  + IN_PLACE: 
+  + IN_WORD: 
+  + values(): LetterValidity[]
+  + valueOf(String): LetterValidity
+}
+class OpponentNameMessage {
+  - name: String
+  + getName(): String
+}
+entity RoundData << record >> {
+  - opponentHasFinished: boolean
+  - opponentSubmissions: SubmissionData[]
+  - playerHasFinished: boolean
+  - playerSubmissions: SubmissionData[]
+  + equals(Object): boolean
+  + hashCode(): int
+  + opponentHasFinished(): boolean
+  + toString(): String
+  + opponentSubmissions(): SubmissionData[]
+  + playerSubmissions(): SubmissionData[]
+  + playerHasFinished(): boolean
+}
+class ServerToClientMessage {
+  - messageType: ServerToClientMessageType
+  + getMessageType(): ServerToClientMessageType
+}
+enum ServerToClientMessageType << enumeration >> {
+  + SUBMISSION_ERROR: 
+  + GAME_STATE_DATA: 
+  + OPPONENT_NAME: 
+  + TOO_MANY_PLAYERS: 
+  + SUCCESSFUL_CONNECTION: 
+  + SUCCESSFUL_DISCONNECTION: 
+  + valueOf(String): ServerToClientMessageType
+  + values(): ServerToClientMessageType[]
+}
+class SetNameMessage {
+  - name: String
+  + getName(): String
+}
+entity SubmissionData << record >> {
+  - submittedWord: String
+  - correct: boolean
+  - submissionValidity: LetterValidity[]
+  + submissionValidity(): LetterValidity[]
+  + submittedWord(): String
+  + correct(): boolean
+  + equals(Object): boolean
+  + hashCode(): int
+  + toString(): String
+}
+class SubmissionErrorMessage
+class SubmissionMessage {
+  - submittedWord: String
+  + getSubmittedWord(): String
+}
+class SuccessfulConnectionMessage
+class SuccessfulDisconnectionMessage
+class TooManyPlayersMessage
+
+ClientToServerMessage          "1" *-[#595959,plain]-> "messageType\n1" ClientToServerMessageType      
+ContinueMessage                 -[#000082,plain]-^  ClientToServerMessage          
+DisconnectMessage               -[#000082,plain]-^  ClientToServerMessage          
+GameStateMessage               "1" *-[#595959,plain]-> "gameStateData\n1" GameStateData                  
+GameStateMessage                -[#000082,plain]-^  ServerToClientMessage          
+OpponentNameMessage             -[#000082,plain]-^  ServerToClientMessage          
+ServerToClientMessage          "1" *-[#595959,plain]-> "messageType\n1" ServerToClientMessageType      
+SetNameMessage                  -[#000082,plain]-^  ClientToServerMessage          
+SubmissionErrorMessage          -[#000082,plain]-^  ServerToClientMessage          
+SubmissionMessage               -[#000082,plain]-^  ClientToServerMessage          
+SuccessfulConnectionMessage     -[#000082,plain]-^  ServerToClientMessage          
+SuccessfulDisconnectionMessage  -[#000082,plain]-^  ServerToClientMessage          
+TooManyPlayersMessage           -[#000082,plain]-^  ServerToClientMessage          
+@enduml

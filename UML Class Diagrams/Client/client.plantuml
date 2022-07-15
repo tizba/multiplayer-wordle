@@ -1,0 +1,110 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class ConnectionController {
+  - gui: GUI
+  - messageSender: MessageSender
+  - socket: Socket
+  - connected: boolean
+  + connect(String, int): void
+  + sendMessage(ClientToServerMessage): void
+  + getGui(): GUI
+  + isConnected(): boolean
+  + disconnect(): void
+}
+class ContinueButton
+class GUI {
+  - waitingLabel: JLabel
+  - myMenuBar: MyMenuBar
+  - wordlePanel: WordlePanel
+  + updateWithGameStateData(GameStateData): void
+  + getWordlePanel(): WordlePanel
+  + getMyMenuBar(): MyMenuBar
+}
+class MessageReader {
+  - messageReaderLogger: Logger
+  - connectionController: ConnectionController
+  - objectInputStream: ObjectInputStream
+  - handleSuccessfulDisconnection(): void
+  - handleNames(OpponentNameMessage): void
+  - handleTooManyPlayers(): void
+  - handleSuccessfulConnection(): void
+  - handleGameState(GameStateMessage): void
+  - handleSubmissionError(): void
+  + run(): void
+  - onServerShutdown(): void
+  - handleMessage(ServerToClientMessage): void
+}
+entity MessageSender << record >> {
+  - messageSenderLogger: Logger
+  - objectOutputStream: ObjectOutputStream
+  + objectOutputStream(): ObjectOutputStream
+  + sendMessage(ClientToServerMessage): void
+}
+class MyMenuBar {
+  - connectionController: ConnectionController
+  - menuConnectTo: JMenuItem
+  - menuDisconnect: JMenuItem
+  + getMenuConnectTo(): JMenuItem
+  + getMenuDisconnect(): JMenuItem
+  - menuConnectTo(): void
+  - menuDisconnect(): void
+}
+class NameTextField
+class OpponentPlayerPanel {
+  + updateWithGameState(GameStateData): void
+}
+class PlayerPanel {
+  # submissionsPanel: SubmissionsPanel
+  # continueButton: JButton
+  # submitTextField: SubmitTextField
+  # nameTextField: NameTextField
+  + handleError(): void
+  + getNameTextField(): NameTextField
+  + updateWithGameState(GameStateData): void
+}
+class SubmissionRow {
+  - submissionLabels: JLabel[]
+  - setAndAddSubmissionLabels(String): void
+  - setLabelsColors(LetterValidity[]): void
+}
+class SubmissionsPanel {
+  + addSubmission(SubmissionData): void
+}
+class SubmitTextField
+class WordlePanel {
+  - opponentPanel: OpponentPlayerPanel
+  - playerPanel: PlayerPanel
+  + getPlayerPanel(): PlayerPanel
+  + updateWithGameState(GameStateData): void
+  + getOpponentPanel(): OpponentPlayerPanel
+}
+
+ConnectionController "1" *-[#595959,plain]-> "gui\n1" GUI                  
+ConnectionController  -[#595959,dashed]->  MessageReader        : "«create»"
+ConnectionController "1" *-[#595959,plain]-> "messageSender\n1" MessageSender        
+ConnectionController  -[#595959,dashed]->  MessageSender        : "«create»"
+GUI                   -[#595959,dashed]->  ConnectionController : "«create»"
+GUI                  "1" *-[#595959,plain]-> "myMenuBar\n1" MyMenuBar            
+GUI                   -[#595959,dashed]->  MyMenuBar            : "«create»"
+GUI                   -[#595959,dashed]->  WordlePanel          : "«create»"
+GUI                  "1" *-[#595959,plain]-> "wordlePanel\n1" WordlePanel          
+MessageReader        "1" *-[#595959,plain]-> "connectionController\n1" ConnectionController 
+MyMenuBar            "1" *-[#595959,plain]-> "connectionController\n1" ConnectionController 
+OpponentPlayerPanel   -[#000082,plain]-^  PlayerPanel          
+PlayerPanel           -[#595959,dashed]->  ContinueButton       : "«create»"
+PlayerPanel           -[#595959,dashed]->  NameTextField        : "«create»"
+PlayerPanel          "1" *-[#595959,plain]-> "nameTextField\n1" NameTextField        
+PlayerPanel           -[#595959,dashed]->  SubmissionsPanel     : "«create»"
+PlayerPanel          "1" *-[#595959,plain]-> "submissionsPanel\n1" SubmissionsPanel     
+PlayerPanel          "1" *-[#595959,plain]-> "submitTextField\n1" SubmitTextField      
+PlayerPanel           -[#595959,dashed]->  SubmitTextField      : "«create»"
+SubmissionsPanel      -[#595959,dashed]->  SubmissionRow        : "«create»"
+WordlePanel           -[#595959,dashed]->  OpponentPlayerPanel  : "«create»"
+WordlePanel          "1" *-[#595959,plain]-> "opponentPanel\n1" OpponentPlayerPanel  
+WordlePanel           -[#595959,dashed]->  PlayerPanel          : "«create»"
+WordlePanel          "1" *-[#595959,plain]-> "playerPanel\n1" PlayerPanel          
+@enduml

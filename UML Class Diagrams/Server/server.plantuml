@@ -1,0 +1,116 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class Game {
+  - players: Player[]
+  - server: Server
+  - words: List<String>
+  - random: Random
+  - wantsToContinue: HashMap<UUID, Boolean>
+  - running: boolean
+  - round: Round
+  + end(): void
+  + disconnectPlayers(): void
+  + addSubmission(Player, String): void
+  + start(): void
+  + sendNameToOpponent(Player): void
+  + isWordValid(String): boolean
+  - getRandomWord(List<String>): String
+  + getOpponentOf(Player): Player
+  + sendGameStateMessage(): void
+  + addPlayer(Player): void
+  + isFullOfPlayers(): boolean
+  - getGameStateData(Player): GameStateData
+  + setWantsToContinue(Player, boolean): void
+  - startNewRound(): void
+  + getGameStateMessage(Player): GameStateMessage
+}
+class GameIsFullException
+class MessageReader {
+  - objectInputStream: ObjectInputStream
+  - player: Player
+  + run(): void
+  - handleMessage(ClientToServerMessage): void
+}
+entity MessageSender << record >> {
+  - messageSenderLogger: Logger
+  - objectOutputStream: ObjectOutputStream
+  + sendMessage(ServerToClientMessage): void
+  + objectOutputStream(): ObjectOutputStream
+}
+class Player {
+  - connected: boolean
+  - uuid: UUID
+  - game: Game
+  - messageSender: MessageSender
+  - name: String
+  - messageReader: MessageReader
+  + disconnect(): void
+  + isConnected(): boolean
+  + setConnected(boolean): void
+  + getGame(): Game
+  + getUuid(): UUID
+  + acceptConnection(): void
+  + getName(): String
+  + setName(String): void
+  + getMessageSender(): MessageSender
+}
+class Round {
+  - submissions: HashMap<UUID, Submission[]>
+  - wordToDiscover: String
+  - playersFinished: HashMap<UUID, Boolean>
+  - players: Player[]
+  - updatePlayersFinished(): void
+  + didPlayerFinished(Player): boolean
+  + addSubmission(Player, String): void
+  + getPlayerSubmissions(Player): Submission[]
+  + getRoundData(Player): RoundData
+  - nextSubmissionIndexOfPlayer(Player): int
+  + getWordToDiscover(): String
+  + getOpponentOf(Player): Player
+}
+class Server {
+  - port: int
+  - words: List<String>
+  - game: Game
+  - serverLogger: Logger
+  + initNewGame(): void
+  - initWords(): List<String>
+  - handleNewClient(Socket): void
+  + start(): void
+}
+class Submission {
+  - submittedWord: String
+  - correct: boolean
+  - validity: LetterValidity[]
+  + getSubmissionData(): SubmissionData
+  - initValidity(String, String): LetterValidity[]
+  + getOpponentSubmissionData(): SubmissionData
+  - checkIfCorrect(LetterValidity[]): boolean
+  + isCorrect(): boolean
+  + getValidity(): LetterValidity[]
+}
+class SubmissionLengthException
+
+Game                       -[#595959,dashed]->  GameIsFullException       : "«create»"
+Game                       -[#595959,dashed]->  Player                    : "«create»"
+Game                      "1" *-[#595959,plain]-> "players\n*" Player                    
+Game                      "1" *-[#595959,plain]-> "round\n1" Round                     
+Game                       -[#595959,dashed]->  Round                     : "«create»"
+Game                      "1" *-[#595959,plain]-> "server\n1" Server                    
+MessageReader             "1" *-[#595959,plain]-> "player\n1" Player                    
+Player                    "1" *-[#595959,plain]-> "game\n1" Game                      
+Player                     -[#595959,dashed]->  MessageReader             : "«create»"
+Player                    "1" *-[#595959,plain]-> "messageReader\n1" MessageReader             
+Player                    "1" *-[#595959,plain]-> "messageSender\n1" MessageSender             
+Player                     -[#595959,dashed]->  MessageSender             : "«create»"
+Round                     "1" *-[#595959,plain]-> "players\n*" Player                    
+Round                      -[#595959,dashed]->  Submission                : "«create»"
+Server                     -[#595959,dashed]->  Game                      : "«create»"
+Server                    "1" *-[#595959,plain]-> "game\n1" Game                      
+Server                     -[#595959,dashed]->  Player                    : "«create»"
+Submission                 -[#595959,dashed]->  SubmissionLengthException : "«create»"
+@enduml
