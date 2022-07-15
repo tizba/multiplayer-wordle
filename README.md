@@ -29,7 +29,7 @@ ___
 ```
 Example
 ```
-    jara -jar multiplayer-wordle-1.0.0.jar server 6789
+    java -jar multiplayer-wordle-1.0.0.jar server 6789
 ```
 ___
 - Run a client
