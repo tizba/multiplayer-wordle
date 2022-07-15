@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.baptiste-masoud</groupId>
-    <artifactId>multiplayer-wordle</artifactId>
+    <artifactId>online-multiplayer-wordle</artifactId>
     <version>1.0.0</version>
 
     <properties>
@@ -22,7 +22,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.baptiste_masoud.multiplayer_wordle.Main</mainClass>
+                            <mainClass>fr.baptiste_masoud.online_multiplayer_wordle.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

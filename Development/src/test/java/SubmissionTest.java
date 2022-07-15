@@ -1,6 +1,6 @@
-import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.LetterValidity;
-import fr.baptiste_masoud.multiplayer_wordle.server.game.Submission;
-import fr.baptiste_masoud.multiplayer_wordle.server.game.SubmissionLengthException;
+import fr.baptiste_masoud.online_multiplayer_wordle.messages.game_state.LetterValidity;
+import fr.baptiste_masoud.online_multiplayer_wordle.server.game.Submission;
+import fr.baptiste_masoud.online_multiplayer_wordle.server.game.SubmissionLengthException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
