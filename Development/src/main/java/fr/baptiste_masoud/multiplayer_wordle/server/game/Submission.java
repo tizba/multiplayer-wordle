@@ -8,7 +8,7 @@ public class Submission {
     private final LetterValidity[] validity;
     private final boolean correct;
 
-    public Submission(String wordToDiscover, String submittedWord) {
+    public Submission(String wordToDiscover, String submittedWord) throws SubmissionLengthException {
         if (wordToDiscover.length() != submittedWord.length())
             throw new SubmissionLengthException(wordToDiscover + " and " + submittedWord + " are not the same length");
         String wordToDiscover1 = wordToDiscover.toUpperCase();
@@ -92,5 +92,9 @@ public class Submission {
 
     public boolean isCorrect() {
         return correct;
+    }
+
+    public LetterValidity[] getValidity() {
+        return validity;
     }
 }
