@@ -2,14 +2,15 @@ package fr.baptiste_masoud.multiplayer_wordle.server.game;
 
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.RoundData;
 import fr.baptiste_masoud.multiplayer_wordle.messages.game_state.SubmissionData;
+import fr.baptiste_masoud.multiplayer_wordle.messages.s_to_c.SubmissionErrorMessage;
 import fr.baptiste_masoud.multiplayer_wordle.server.Player;
 
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class Round {
     private final String wordToDiscover;
-
     private final Player[] players;
     private final HashMap<UUID, Submission[]> submissions;
     private final HashMap<UUID, Boolean> playersFinished;
@@ -94,10 +95,17 @@ public class Round {
     }
 
     public void addSubmission(Player player, String submittedWord) {
-        getPlayerSubmissions(player)[nextSubmissionIndexOfPlayer(player)]
-                = new Submission(wordToDiscover, submittedWord);
-
-        updatePlayersFinished();
+        // if the player has not finished yet
+        // and the submitted word has the same length as the word to discover
+        // and the submitted word is a word without special chars
+        if (!this.didPlayerFinished(player)
+                && submittedWord.length() == this.getWordToDiscover().length()
+                && Pattern.matches("[A-Za-z]*", submittedWord)) {
+            getPlayerSubmissions(player)[nextSubmissionIndexOfPlayer(player)] = new Submission(wordToDiscover, submittedWord);
+            updatePlayersFinished();
+        } else {
+            player.getMessageSender().sendMessage(new SubmissionErrorMessage());
+        }
     }
 
     private void updatePlayersFinished() {

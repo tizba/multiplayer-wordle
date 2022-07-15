@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 
 public class Game {
@@ -166,19 +165,17 @@ public class Game {
      * @param submittedWord the word that the player submitted
      */
     public void addSubmission(Player player, String submittedWord) {
-        // if a round has started
-        // and the player has not finished yet
-        // and the submitted word has the same length as the word to discover
-        // and the submitted word is a word without special chars
-        if (round != null
-                && !round.didPlayerFinished(player)
-                && submittedWord.length() == round.getWordToDiscover().length()
-                && Pattern.matches("[A-Za-z]*", submittedWord)) {
+        // if a round has started and word is in list of valid words
+        if (round != null && isWordValid(submittedWord)) {
             this.round.addSubmission(player, submittedWord);
         }
         // if not, sends an error
         else {
             player.getMessageSender().sendMessage(new SubmissionErrorMessage());
         }
+    }
+
+    public boolean isWordValid(String word) {
+        return this.words.contains(word);
     }
 }
